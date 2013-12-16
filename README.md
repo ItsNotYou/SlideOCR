@@ -10,10 +10,11 @@ Where to start
 
 ### Installation ###
 
-The code is written in [Python 2.7][python]. Apart from that we need [OpenCV for Python][opencv].
+The code is written in [Python 2.7][python]. Apart from that we need [OpenCV for Python][opencv] and [Tesseract][tesseract].
 
    [python]: http://www.python.org/download/releases/2.7.6/
    [opencv]: http://opencvpython.blogspot.de/2012/05/install-opencv-in-windows-for-python.html
+   [tesseract]: https://code.google.com/p/tesseract-ocr/
 
 ### Configuration ###
 
