@@ -85,7 +85,7 @@ class BilateralFiltering(object):
             cv2.imwrite(newPath,outImage)
             
             # add meta informations
-            image.metaHistory.append("%s(sigmaColor=%s)" % (self.procName,self.sigmaColor))
+            image.metaHistory[self.procName] = "%s(sigmaColor=%s)" % (self.procName,self.sigmaColor)
             
             # modify path
             image.path = newPath
