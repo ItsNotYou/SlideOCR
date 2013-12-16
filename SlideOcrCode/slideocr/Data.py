@@ -6,13 +6,14 @@ Created on 08.12.2013
 
 class OcrImage:
     '''
-    Represents an image. It doesn't matter whether it is stored as a stream timestamp, an in memory object or a file
-    May contain properties like position (for bounding boxes), tag (for idetification across different ocr engines) or byteRepresentation (for content representation)
+    Represents an image on the file system
+    May contain properties like position (for bounding boxes), tag (for identification across different ocr engines) or byteRepresentation (for content representation)
     '''
     
-    def __init__(self):
-        # Dictionary containing a history of operations that were executed on this instance
-        self.metaHistory = {};
+    # Dictionary containing a history of operations that were executed on this instance
+    metaHistory = {}
+    # Path to the image
+    path = None
     
     def asBytes(self):
         '''
