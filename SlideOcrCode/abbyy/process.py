@@ -16,7 +16,7 @@ import urllib
 from AbbyyOnlineSdk import *
 from slideocr.conf.Secrets import *
 
-def process():
+def process(sourceFile, language = 'English', outputFormat = 'txt'):
 	processor = AbbyyOnlineSdk()
 	processor.ApplicationId = Secrets.ABBYY_APP_ID
 	processor.Password = Secrets.ABBYY_PWD
@@ -29,7 +29,7 @@ def process():
 	
 	
 	# Recognize a file at filePath and save result to resultFilePath
-	def recognizeFile( filePath, resultFilePath, language, outputFormat ):
+	def recognizeFile( filePath, language, outputFormat ):
 		print "Uploading.."
 		settings = ProcessingSettings()
 		settings.Language = language
@@ -54,30 +54,13 @@ def process():
 		print "Status = %s" % task.Status
 		
 		if task.DownloadUrl != None:
-			processor.DownloadResult( task, resultFilePath )
-			print "Result was written to %s" % resultFilePath
+			return processor.DownloadResult( task )
+		else:
+			return None
 	
-	
-	
-		
-	parser = argparse.ArgumentParser( description="Recognize a file via web service" )
-	parser.add_argument( 'sourceFile' )
-	parser.add_argument( 'targetFile' )
-	
-	parser.add_argument( '-l', '--language', default='English', help='Recognition language (default: %(default))' )
-	group = parser.add_mutually_exclusive_group()
-	group.add_argument( '-txt', action='store_const', const='txt', dest='format', default='txt' )
-	group.add_argument( '-pdf', action='store_const', const='pdfSearchable', dest='format' )
-	group.add_argument( '-rtf', action='store_const', const='rtf', dest='format' )
-	group.add_argument( '-docx', action='store_const', const='docx', dest='format' )
-	group.add_argument( '-xml', action='store_const', const='xml', dest='format' )
-	
-	args = parser.parse_args()
-	
-	sourceFile = args.sourceFile
-	targetFile = args.targetFile
-	language = args.language
-	outputFormat = args.format
 	
 	if os.path.isfile( sourceFile ):
-		recognizeFile( sourceFile, targetFile, language, outputFormat )	
+		return recognizeFile( sourceFile, language, outputFormat )
+	else:
+		print "File not found: %s" % sourceFile
+		return None

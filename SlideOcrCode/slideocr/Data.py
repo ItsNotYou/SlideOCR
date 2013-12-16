@@ -14,6 +14,8 @@ class OcrImage:
     metaHistory = {}
     # Path to the image
     path = None
+    # Ocr detected text
+    text = None
     
     def asBytes(self):
         '''

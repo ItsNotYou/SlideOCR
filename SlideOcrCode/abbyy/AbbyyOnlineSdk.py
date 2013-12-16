@@ -62,13 +62,11 @@ class AbbyyOnlineSdk:
 		task = self.DecodeResponse( response )
 		return task
 
-	def DownloadResult( self, task, outputPath ):
+	def DownloadResult( self, task ):
 		getResultParams = urllib.urlencode( { "taskId" : task.Id } )
 		getResultUrl = self.ServerUrl + "getResult?" + getResultParams
 		request = urllib2.Request( getResultUrl, None, self.buildAuthInfo() )
-		fileResponse = self.getOpener().open( request ).read()
-		resultFile = open( outputPath, "wb" )
-		resultFile.write( fileResponse )
+		return self.getOpener().open( request ).read()
 
 
 	def DecodeResponse( self, xmlResponse ):

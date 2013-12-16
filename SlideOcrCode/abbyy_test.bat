@@ -1,1 +1,1 @@
-C:\Python27\python.exe C:\Users\hgessner\workspace\SlideOCR\SlideOcrCode\abbyy_test.py C:\Users\hgessner\workspace\SlideOCR\workspace\img1.png C:\Users\hgessner\workspace\SlideOCR\workspace\result.txt -txt
+C:\Python27\python.exe C:\Users\hgessner\workspace\SlideOCR\SlideOcrCode\abbyy_test.py C:\Users\hgessner\workspace\SlideOCR\workspace\img1.png
