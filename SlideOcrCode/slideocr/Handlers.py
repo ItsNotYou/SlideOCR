@@ -20,20 +20,20 @@ class PreProcessing:
     Pre processing includes edge detection, bounding box detection etc
     '''
     
-    def process(self, image):
+    def process(self, images):
         '''
-        We get an ocr image here and return multiple ocr images
+        We get multiple ocr images here and return multiple ocr images
         Documents the processing by adding an entry to the images metaHistory property
         '''
 
 class Ocr:
     '''
-    Detects the text within an image
+    Detects the text within each image
     '''
     
-    def process(self, image):
+    def process(self, images):
         '''
-        We get an ocr image here and return the image extended by the detected text
+        We get multiple ocr images here and return the images extended by the detected text
         Adds a property text to the image
         '''
     
