@@ -5,13 +5,13 @@
 import argparse
 import base64
 import getopt
-import abbyy.MultipartPostHandler
+import MultipartPostHandler
 import os
 import re
 import sys
 import time
-import urllib.request, urllib.error, urllib.parse
-import urllib.request, urllib.parse, urllib.error
+import urllib2
+import urllib
 import xml.dom.minidom
 
 class ProcessingSettings:
@@ -37,14 +37,14 @@ class AbbyyOnlineSdk:
 	enableDebugging = 0
 
 	def ProcessImage( self, filePath, settings ):
-		urlParams = urllib.parse.urlencode({
+		urlParams = urllib.urlencode({
 			"language" : settings.Language,
 			"exportFormat" : settings.OutputFormat
 			})
 		requestUrl = self.ServerUrl + "processImage?" + urlParams
 
 		bodyParams = { "file" : open( filePath, "rb" )  }
-		request = urllib.request.Request( requestUrl, None, self.buildAuthInfo() )
+		request = urllib2.Request( requestUrl, None, self.buildAuthInfo() )
 		response = self.getOpener().open(request, bodyParams).read()
 		if response.find( '<Error>' ) != -1 :
 			return None
@@ -55,17 +55,17 @@ class AbbyyOnlineSdk:
 		return task
 
 	def GetTaskStatus( self, task ):
-		urlParams = urllib.parse.urlencode( { "taskId" : task.Id } )
+		urlParams = urllib.urlencode( { "taskId" : task.Id } )
 		statusUrl = self.ServerUrl + "getTaskStatus?" + urlParams
-		request = urllib.request.Request( statusUrl, None, self.buildAuthInfo() )
+		request = urllib2.Request( statusUrl, None, self.buildAuthInfo() )
 		response = self.getOpener().open( request ).read()
 		task = self.DecodeResponse( response )
 		return task
 
 	def DownloadResult( self, task, outputPath ):
-		getResultParams = urllib.parse.urlencode( { "taskId" : task.Id } )
+		getResultParams = urllib.urlencode( { "taskId" : task.Id } )
 		getResultUrl = self.ServerUrl + "getResult?" + getResultParams
-		request = urllib.request.Request( getResultUrl, None, self.buildAuthInfo() )
+		request = urllib2.Request( getResultUrl, None, self.buildAuthInfo() )
 		fileResponse = self.getOpener().open( request ).read()
 		resultFile = open( outputPath, "wb" )
 		resultFile.write( fileResponse )
@@ -88,13 +88,13 @@ class AbbyyOnlineSdk:
 
 	def getOpener( self ):
 		if self.Proxy == None:
-			self.opener = urllib.request.build_opener( abbyy.MultipartPostHandler.MultipartPostHandler,
-			urllib.request.HTTPHandler(debuglevel=self.enableDebugging))
+			self.opener = urllib2.build_opener( MultipartPostHandler.MultipartPostHandler,
+			urllib2.HTTPHandler(debuglevel=self.enableDebugging))
 		else:
-			self.opener = urllib.request.build_opener( 
+			self.opener = urllib2.build_opener( 
 				self.Proxy, 
-				abbyy.MultipartPostHandler.MultipartPostHandler,
-				urllib.request.HTTPHandler(debuglevel=self.enableDebugging))
+				MultipartPostHandler.MultipartPostHandler,
+				urllib2.HTTPHandler(debuglevel=self.enableDebugging))
 		return self.opener
 
 
