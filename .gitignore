@@ -1,3 +1,5 @@
 SlideOcrCode/slideocr/conf/Secrets.py
-__pycache__/
 *.pyc
+
+__pycache__/
+workspace/
