@@ -17,12 +17,12 @@ The code is written in [Python 2.7][python]. Apart from that we need [OpenCV for
 
 ### Configuration ###
 
-Part of the OCR works via [ABBYY Cloud OCR SDK][abbyy] so we need to configure the necessary account details. We will need a [developer account][abbyy-register]. After completing registration, create a **Secrets.py*** in SlideOCR/SlideOcrCode/slideocr/conf and insert the following code:
+Part of the OCR works via [ABBYY Cloud OCR SDK][abbyy] so we need to configure the necessary account details. We will need a [developer account][abbyy-register]. After completing registration, **create a Secrets.py** in *SlideOCR/SlideOcrCode/slideocr/conf* and insert the following code:
 
-'class Secrets:
-    
-    ABBYY_APP_ID = "<your-app-id-goes-here>"
-    ABBYY_PWD = "<your-app-password-goes-here>"'
+    class Secrets:
+        
+        ABBYY_APP_ID = "<your-app-id-goes-here>"
+        ABBYY_PWD = "<your-app-password-goes-here>"
 
    [abbyy]: http://ocrsdk.com/
    [abbyy-register]: http://cloud.ocrsdk.com/Account/Register
