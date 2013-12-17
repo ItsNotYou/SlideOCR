@@ -14,21 +14,20 @@ from slideocr.Data import OcrImage
 from slideocr.PreProcessors import BilateralFiltering
 
 
-def recognizeFile(sourceFile):
+def recognizeFile(sourceFile, skipAbbyy):
     images = [OcrImage()]
     images[0].path = sourceFile
     
     biFilter = BilateralFiltering(75)
     images = biFilter.process(images)
     
-    imagesAbbyy = copy.deepcopy(images);
+    if not skipAbbyy:
+        imagesAbbyy = copy.deepcopy(images);
+        abbyy = AbbyyCloud()
+        result = abbyy.process(imagesAbbyy)
+        print result[0].text
+    
     imagesTesseract = copy.deepcopy(images);
-    
-    abbyy = AbbyyCloud()
-    result = abbyy.process(imagesAbbyy)
-     
-    print result[0].text
-    
     tesseract = Tesseract()
     result = tesseract.process(imagesTesseract)
     
@@ -38,15 +37,17 @@ def recognizeFile(sourceFile):
 parser = argparse.ArgumentParser( description="Recognize a file via web service" )
 parser.add_argument( 'sourceFile' )
 parser.add_argument( 'workingDirectory' )
+parser.add_argument("--skip-abbyy", help="skips ABBYY Cloud OCR processing", action="store_true")
 args = parser.parse_args()
 
 sourceFile = args.sourceFile
 workingDirectory = args.workingDirectory
+skipAbbyy = args.skip_abbyy
 
 if os.path.isfile(sourceFile):
     targetFile = os.path.join(workingDirectory, os.path.basename(sourceFile));
     shutil.copyfile(sourceFile, targetFile)
-    recognizeFile(targetFile)
+    recognizeFile(targetFile, skipAbbyy)
 else:
     print(sourceFile + " ist keine Datei")
     print("Vorgang abgebrochen")
