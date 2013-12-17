@@ -5,15 +5,13 @@ Created on 08.12.2013
 '''
 
 import argparse
-import os
 from slideocr.PreProcessors import PreProcessors
 from slideocr.ocr.OcrEngines import OcrEngines
-from slideocr.VideoExtractor import VideoExtractor
+from slideocr.VideoExtractor import VideoExtractor, ImageExtractor
 
 
-def recognizeFile(sourceFile, workingDirectory, skipAbbyy):
-    extractor = VideoExtractor()
-    images = extractor.convertSingleImage(sourceFile, workingDirectory)
+def recognizeFile(extractor, skipAbbyy):
+    images = extractor.extract();
     
     pre = PreProcessors()
     images = pre.process(images)
@@ -24,18 +22,22 @@ def recognizeFile(sourceFile, workingDirectory, skipAbbyy):
         print image.text
 
 
-parser = argparse.ArgumentParser( description="Recognize a file via web service" )
-parser.add_argument( 'sourceFile' )
-parser.add_argument( 'workingDirectory' )
+parser = argparse.ArgumentParser(description="Extract text from a video stream of lecture slides")
+parser.add_argument("workingDirectory", help = "Path to a directory that will be used as temporary workspace")
+parser.add_argument("sourceFile", help = "Path to an image or video file that will be processed. Video files require the option -e")
+parser.add_argument("-e", "--extraction", help = "Path to a file that contains the frame extraction data")
 parser.add_argument("--skip-abbyy", help="skips ABBYY Cloud OCR processing", action="store_true")
-args = parser.parse_args()
 
-sourceFile = args.sourceFile
+args = parser.parse_args()
 workingDirectory = args.workingDirectory
+sourceFile = args.sourceFile
+split = args.extraction
 skipAbbyy = args.skip_abbyy
 
-if os.path.isfile(sourceFile):
-    recognizeFile(sourceFile, workingDirectory, skipAbbyy)
+extractor = None
+if split == None:
+    extractor = ImageExtractor(workingDirectory, sourceFile)
 else:
-    print(sourceFile + " ist keine Datei")
-    print("Vorgang abgebrochen")
+    extractor = VideoExtractor(workingDirectory, sourceFile, split)
+
+recognizeFile(extractor, skipAbbyy)

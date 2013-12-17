@@ -88,7 +88,7 @@ class FrameExtractor:
         return os.path.join(self.pathToWorkspace, prefix + "_" + str(uniqueId) + extension)
 
 
-class VideoExtractor:
+class ExtractionHelper:
     '''
     Combines several helper functions for easy frame creation or extraction. The helper functions always return an array of ocr images
     '''
@@ -98,7 +98,7 @@ class VideoExtractor:
         shutil.copyfile(imagePath, targetFile)
         
         images = [OcrImage()]
-        images[0].path = imagePath
+        images[0].path = targetFile
         return images
     
     
@@ -106,4 +106,32 @@ class VideoExtractor:
         timestamps = TableReader().readTimestamps(tablePath, videoPath)
         images = FrameExtractor(workingDirectory).mapTimestampsToFrames(timestamps)
         return images
+    
+
+class VideoExtractor:
+    
+    workingDirectory = None
+    videoPath = None
+    splitPath = None
+    
+    def __init__(self, workingDirectory, videoPath, splitPath):
+        self.workingDirectory = workingDirectory
+        self.videoPath = videoPath
+        self.splitPath = splitPath
+        
+    def extract(self):
+        return ExtractionHelper().convertVideoByTable(self.videoPath, self.splitPath, self.workingDirectory)
+    
+    
+class ImageExtractor:
+    
+    workingDirectory = None
+    imagePath = None
+    
+    def __init__(self, workingDirectory, imagePath):
+        self.workingDirectory = workingDirectory
+        self.imagePath = imagePath
+        
+    def extract(self):
+        return ExtractionHelper().convertSingleImage(self.imagePath, self.workingDirectory)
     
