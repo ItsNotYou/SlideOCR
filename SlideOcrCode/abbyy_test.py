@@ -5,7 +5,7 @@ Created on 16.12.2013
 '''
 
 import time
-from slideocr.VideoExtractor import FrameExtractor, TableReader
+from slideocr.VideoExtractor import VideoExtractor
 
 
 source = "C:\\Users\\hgessner\\workspace\\SlideOCR\\samples\\desktop.mp4"
@@ -14,8 +14,8 @@ table = "C:\\Users\\hgessner\\workspace\\SlideOCR\\samples\\slide-timestamps.txt
 
 start = int(round(time.time() * 1000))
 
-timestamps = TableReader().readTimestamps(table, source)
-images = FrameExtractor(workspace).mapTimestampsToFrames(timestamps)
+extractor = VideoExtractor()
+images = extractor.convertVideoByTable(source, table, workspace)
 
 end = int(round(time.time() * 1000))
 

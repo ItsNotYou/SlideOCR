@@ -6,32 +6,22 @@ Created on 08.12.2013
 
 import argparse
 import os
-import copy
-import shutil
-from slideocr.ocr.Abbyy import AbbyyCloud
-from slideocr.ocr.Tesseract import Tesseract
-from slideocr.Data import OcrImage
-from slideocr.PreProcessors import BilateralFiltering
+from slideocr.PreProcessors import PreProcessors
+from slideocr.ocr.OcrEngines import OcrEngines
+from slideocr.VideoExtractor import VideoExtractor
 
 
-def recognizeFile(sourceFile, skipAbbyy):
-    images = [OcrImage()]
-    images[0].path = sourceFile
+def recognizeFile(sourceFile, workingDirectory, skipAbbyy):
+    extractor = VideoExtractor()
+    images = extractor.convertSingleImage(sourceFile, workingDirectory)
     
-    biFilter = BilateralFiltering(75)
-    images = biFilter.process(images)
+    pre = PreProcessors()
+    images = pre.process(images)
     
-    if not skipAbbyy:
-        imagesAbbyy = copy.deepcopy(images);
-        abbyy = AbbyyCloud()
-        result = abbyy.process(imagesAbbyy)
-        print result[0].text
-    
-    imagesTesseract = copy.deepcopy(images);
-    tesseract = Tesseract()
-    result = tesseract.process(imagesTesseract)
-    
-    print result[0].text
+    ocr = OcrEngines(skipAbbyy)
+    images = ocr.process(images)
+    for image in images:
+        print image.text
 
 
 parser = argparse.ArgumentParser( description="Recognize a file via web service" )
@@ -45,9 +35,7 @@ workingDirectory = args.workingDirectory
 skipAbbyy = args.skip_abbyy
 
 if os.path.isfile(sourceFile):
-    targetFile = os.path.join(workingDirectory, os.path.basename(sourceFile));
-    shutil.copyfile(sourceFile, targetFile)
-    recognizeFile(targetFile, skipAbbyy)
+    recognizeFile(sourceFile, workingDirectory, skipAbbyy)
 else:
     print(sourceFile + " ist keine Datei")
     print("Vorgang abgebrochen")

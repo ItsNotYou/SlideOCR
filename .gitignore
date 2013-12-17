@@ -1,4 +1,5 @@
 SlideOcrCode/slideocr/conf/Secrets.py
+samples/desktop.mp4
 *.pyc
 
 __pycache__/

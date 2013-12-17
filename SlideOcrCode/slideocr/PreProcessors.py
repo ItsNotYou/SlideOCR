@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 import os
+from slideocr.Handlers import PreProcessing
 
 
 #TODO: Dateinamen werden sehr lang bei langer kette
@@ -234,6 +235,18 @@ def _createFileName(path,argList,procName):
     return os.path.join(head,name + "_%s%s" % (procName,add) + ext)
     
         
-        
-        
-        
+class PreProcessors(PreProcessing):
+    '''
+    Combines all pre processing steps
+    '''
+    
+    bilateralFiltering = None
+    
+    def __init__(self):
+        self.bilateralFiltering = BilateralFiltering(75)
+    
+    def process(self, images):
+        if self.bilateralFiltering:
+            images = self.bilateralFiltering.process(images)
+        return images
+    

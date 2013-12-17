@@ -4,6 +4,7 @@ Created on 16.12.2013
 @author: hgessner
 '''
 
+import shutil
 import subprocess
 import uuid
 import os
@@ -77,13 +78,32 @@ class FrameExtractor:
     
     
     def extractFrame(self, seconds, sourcePath, targetPath):
-        '''
-        Does a fast and accurate seeking for the specified timestamp. For details see https://trac.ffmpeg.org/wiki/Seeking%20with%20FFmpeg
-        '''
+        # Does a fast and accurate seeking for the specified timestamp. For details see https://trac.ffmpeg.org/wiki/Seeking%20with%20FFmpeg
         subprocess.call([self.procPath, "-loglevel", "warning", "-ss", str(seconds - self.slowSearchDelta), "-i", sourcePath, "-ss", str(self.slowSearchDelta), "-vframes", "1", targetPath]);
         
         
-    # creates the file name of an output image        
     def _createFileName(self, prefix, extension):
+        # creates the file name of an output image        
         uniqueId = uuid.uuid4()
         return os.path.join(self.pathToWorkspace, prefix + "_" + str(uniqueId) + extension)
+
+
+class VideoExtractor:
+    '''
+    Combines several helper functions for easy frame creation or extraction. The helper functions always return an array of ocr images
+    '''
+    
+    def convertSingleImage(self, imagePath, workingDirectory):
+        targetFile = os.path.join(workingDirectory, os.path.basename(imagePath));
+        shutil.copyfile(imagePath, targetFile)
+        
+        images = [OcrImage()]
+        images[0].path = imagePath
+        return images
+    
+    
+    def convertVideoByTable(self, videoPath, tablePath, workingDirectory):
+        timestamps = TableReader().readTimestamps(tablePath, videoPath)
+        images = FrameExtractor(workingDirectory).mapTimestampsToFrames(timestamps)
+        return images
+    
