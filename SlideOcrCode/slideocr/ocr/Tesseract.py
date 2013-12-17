@@ -15,7 +15,7 @@ class Tesseract(Ocr):
     '''
     
     procName = "tesseract"
-    procPath = "C:\\Program Files (x86)\\Tesseract-OCR\\tesseract.exe"
+    procPath = "tesseract"
     # Default: detect language as english
     language = "eng"
     

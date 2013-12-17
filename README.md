@@ -10,11 +10,12 @@ Where to start
 
 ### Installation ###
 
-The code is written in [Python 2.7][python]. Apart from that we need [OpenCV for Python][opencv] and [Tesseract][tesseract].
+The code is written in [Python 2.7][python]. Apart from that we need [OpenCV for Python][opencv] for pre processing, [Tesseract][tesseract] for OCR processing and [FFmpeg][ffmpeg] for frame extraction. Tesseract and FFmpeg have to be in our path variable.
 
    [python]: http://www.python.org/download/releases/2.7.6/
    [opencv]: http://opencvpython.blogspot.de/2012/05/install-opencv-in-windows-for-python.html
    [tesseract]: https://code.google.com/p/tesseract-ocr/
+   [ffmpeg]: http://www.ffmpeg.org/
 
 ### Configuration ###
 

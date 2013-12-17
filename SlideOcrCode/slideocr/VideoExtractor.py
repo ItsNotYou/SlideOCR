@@ -80,7 +80,7 @@ class FrameExtractor:
         '''
         Does a fast and accurate seeking for the specified timestamp. For details see https://trac.ffmpeg.org/wiki/Seeking%20with%20FFmpeg
         '''
-        subprocess.call([self.procPath, "-ss", str(seconds - self.slowSearchDelta), "-i", sourcePath, "-ss", str(self.slowSearchDelta), "-vframes", "1", targetPath]);
+        subprocess.call([self.procPath, "-loglevel", "warning", "-ss", str(seconds - self.slowSearchDelta), "-i", sourcePath, "-ss", str(self.slowSearchDelta), "-vframes", "1", targetPath]);
         
         
     # creates the file name of an output image        
