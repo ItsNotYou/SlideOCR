@@ -39,7 +39,7 @@ class TableReader:
     
     
     def readTable(self, pathToTable):
-        return numpy.loadtxt(pathToTable)
+        return numpy.loadtxt(pathToTable, skiprows = 1)
     
     
     def readTimestamps(self, pathToTable, pathToVideo):
