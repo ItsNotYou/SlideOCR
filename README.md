@@ -26,5 +26,28 @@ Part of the OCR works via [ABBYY Cloud OCR SDK][abbyy] so we need to configure t
         ABBYY_APP_ID = "<your-app-id-goes-here>"
         ABBYY_PWD = "<your-app-password-goes-here>"
 
+If you don't want to use the ABBYY Cloud OCR SDK, then you should consider specifying the execution parameter *--skip-abbyy*.
+
    [abbyy]: http://ocrsdk.com/
    [abbyy-register]: http://cloud.ocrsdk.com/Account/Register
+
+### Execution ###
+
+The most convenient way to use the program is via executing *process.py*.
+
+    usage: process.py [-h] [-e EXTRACTION] [--skip-abbyy]
+                      workingDirectory sourceFile
+    
+    Extract text from a video stream of lecture slides
+    
+    positional arguments:
+      workingDirectory      Path to a directory that will be used as temporary
+                            workspace
+      sourceFile            Path to an image or video file that will be processed.
+                            Video files require the option -e
+    
+    optional arguments:
+      -h, --help            show this help message and exit
+      -e EXTRACTION, --extraction EXTRACTION
+                            Path to a file that contains the frame extraction data
+      --skip-abbyy          skips ABBYY Cloud OCR processing
