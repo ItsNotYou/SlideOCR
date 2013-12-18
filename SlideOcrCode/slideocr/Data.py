@@ -16,8 +16,14 @@ class OcrImage:
     path = None
     # Ocr detected text
     text = None
+    # Bounding box
+    bounding = None
+
+
+class BoundingBox:
     
-    def asBytes(self):
-        '''
-        Image content as byte array
-        '''
+    left = 0
+    right = 0
+    top = 0
+    bottom = 0
+    
