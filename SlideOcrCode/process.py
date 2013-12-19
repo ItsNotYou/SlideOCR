@@ -4,11 +4,12 @@ Created on 08.12.2013
 @author: hgessner
 '''
 
-import argparse
-from slideocr.PreProcessors import PreProcessors
+from parameter_parser import ParameterParser
+from slideocr.PreProcessors import *
 from slideocr.ocr.OcrEngines import OcrEngines
 from slideocr.VideoExtractor import VideoExtractor, ImageExtractor
 
+import sys
 
 def recognizeFile(extractor, skipAbbyy):
     images = extractor.extract();
@@ -21,18 +22,15 @@ def recognizeFile(extractor, skipAbbyy):
     for image in images:
         print image.text
 
+parser = ParameterParser()
 
-parser = argparse.ArgumentParser(description="Extract text from a video stream of lecture slides")
-parser.add_argument("workingDirectory", help = "Path to a directory that will be used as temporary workspace")
-parser.add_argument("sourceFile", help = "Path to an image or video file that will be processed. Video files require the option -e")
-parser.add_argument("-e", "--extraction", help = "Path to a file that contains the frame extraction data")
-parser.add_argument("--skip-abbyy", help="skips ABBYY Cloud OCR processing", action="store_true")
+#parse parameter
+(args,unknown_args) = parser.parse(sys.argv[1:])
 
-args = parser.parse_args()
 workingDirectory = args.workingDirectory
 sourceFile = args.sourceFile
 split = args.extraction
-skipAbbyy = args.skip_abbyy
+skipAbbyy = args.skipAbbyy
 
 extractor = None
 if split == None:

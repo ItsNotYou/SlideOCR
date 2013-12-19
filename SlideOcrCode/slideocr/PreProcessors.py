@@ -249,4 +249,173 @@ class PreProcessors(PreProcessing):
         if self.bilateralFiltering:
             images = self.bilateralFiltering.process(images)
         return images
+
+'''
+Processor class providing a method to apply different interpolation. Interpolation is used to smooth edges and reduce noise.
+
+Additional Informations: http://matplotlib.org/users/image_tutorial.html?highlight=set_interpolation
+
+Argument Hints:
+    interpolationMode: Type of interpolation used on the images.
+'''
+
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+import numpy as np
+
+class Interpolation(object):
     
+    procName = "Interpolation"
+    interpolationMode = ""
+    modes=["nearest", "bicubic", "bilinear"]
+    
+    def __init__(self, interpolationMode):
+        if interpolationMode not in modes:
+            sys.stderr.write("Unknown image interpolation mode.\n")
+            sys.exit("Unknown input.\n")
+        self.interpolationMode = interpolationMode
+
+    # processing method
+    def process(self,images):
+        
+        for image in images:
+            # read in image
+            inImage = mpimg.imread(image.path)
+            
+            # apply interpolation
+            imgplot.set_interpolation(self.interpolationMode)
+            
+            # create filename
+            newPath = _createFileName(image.path, [self.interpolationMode], self.procName)
+            
+            # write image
+            imgplot.set_cmap('hot')
+            plt.axis('off')
+            plt.savefig(newPath,bbox_inches='tight')
+            
+            # add meta informations
+            image.metaHistory[self.procName] = "%s(interpolationMode=%s)" % (self.procName,self.interpolationMode)
+            
+            # modify path
+            image.path = newPath
+            
+        return images
+        
+
+
+class NearestInterpolation(object):
+    
+    procName = "NearestInterpolation"
+    interpolationMode = ""
+    modes=["nearest"]
+    
+    def __init__(self, interpolationMode):
+        if interpolationMode not in modes:
+            sys.stderr.write("Unknown image interpolation mode.\n")
+            sys.exit("Unknown input.\n")
+        self.interpolationMode = interpolationMode
+
+    # processing method
+    def process(self,images):
+        
+        for image in images:
+            # read in image
+            inImage = mpimg.imread(image.path)
+            
+            # apply interpolation
+            imgplot.set_interpolation(self.interpolationMode)
+            
+            # create filename
+            newPath = _createFileName(image.path, [self.interpolationMode], self.procName)
+            
+            # write image
+            imgplot.set_cmap('hot')
+            plt.axis('off')
+            plt.savefig(newPath,bbox_inches='tight')
+            
+            # add meta informations
+            image.metaHistory[self.procName] = "%s(interpolationMode=%s)" % (self.procName,self.interpolationMode)
+            
+            # modify path
+            image.path = newPath
+            
+        return images
+        
+
+class BicubicInterpolation(object):
+    
+    procName = "BicubicInterpolation"
+    interpolationMode = ""
+    modes=["bicubic"]
+    
+    def __init__(self, interpolationMode):
+        if interpolationMode not in modes:
+            sys.stderr.write("Unknown image interpolation mode.\n")
+            sys.exit("Unknown input.\n")
+        self.interpolationMode = interpolationMode
+
+    # processing method
+    def process(self,images):
+        
+        for image in images:
+            # read in image
+            inImage = mpimg.imread(image.path)
+            
+            # apply interpolation
+            imgplot.set_interpolation(self.interpolationMode)
+            
+            # create filename
+            newPath = _createFileName(image.path, [self.interpolationMode], self.procName)
+            
+            # write image
+            imgplot.set_cmap('hot')
+            plt.axis('off')
+            plt.savefig(newPath,bbox_inches='tight')
+            
+            # add meta informations
+            image.metaHistory[self.procName] = "%s(interpolationMode=%s)" % (self.procName,self.interpolationMode)
+            
+            # modify path
+            image.path = newPath
+            
+        return images
+        
+
+class BilinearInterpolation(object):
+    
+    procName = "BilinearInterpolation"
+    interpolationMode = ""
+    modes=["bilinear"]
+    
+    def __init__(self, interpolationMode):
+        if interpolationMode not in modes:
+            sys.stderr.write("Unknown image interpolation mode.\n")
+            sys.exit("Unknown input.\n")
+        self.interpolationMode = interpolationMode
+
+    # processing method
+    def process(self,images):
+        
+        for image in images:
+            # read in image
+            inImage = mpimg.imread(image.path)
+            
+            # apply interpolation
+            imgplot.set_interpolation(self.interpolationMode)
+            
+            # create filename
+            newPath = _createFileName(image.path, [self.interpolationMode], self.procName)
+            
+            # write image
+            imgplot.set_cmap('hot')
+            plt.axis('off')
+            plt.savefig(newPath,bbox_inches='tight')
+            
+            # add meta informations
+            image.metaHistory[self.procName] = "%s(interpolationMode=%s)" % (self.procName,self.interpolationMode)
+            
+            # modify path
+            image.path = newPath
+            
+        return images
+        
