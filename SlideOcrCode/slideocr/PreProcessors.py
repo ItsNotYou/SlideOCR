@@ -262,6 +262,7 @@ Argument Hints:
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
+import sys
 
 class Interpolation(object):
     
@@ -270,7 +271,7 @@ class Interpolation(object):
     modes=["nearest", "bicubic", "bilinear"]
     
     def __init__(self, interpolationMode):
-        if interpolationMode not in modes:
+        if interpolationMode not in self.modes:
             sys.stderr.write("Unknown image interpolation mode.\n")
             sys.exit("Unknown input.\n")
         self.interpolationMode = interpolationMode
@@ -283,13 +284,13 @@ class Interpolation(object):
             inImage = mpimg.imread(image.path)
             
             # apply interpolation
-            imgplot.set_interpolation(self.interpolationMode)
+            inImage.set_interpolation(self.interpolationMode)
             
             # create filename
             newPath = _createFileName(image.path, [self.interpolationMode], self.procName)
             
             # write image
-            imgplot.set_cmap('hot')
+            inImage.set_cmap('hot')
             plt.axis('off')
             plt.savefig(newPath,bbox_inches='tight')
             
@@ -310,7 +311,7 @@ class NearestInterpolation(object):
     modes=["nearest"]
     
     def __init__(self, interpolationMode):
-        if interpolationMode not in modes:
+        if interpolationMode not in self.modes:
             sys.stderr.write("Unknown image interpolation mode.\n")
             sys.exit("Unknown input.\n")
         self.interpolationMode = interpolationMode
@@ -323,13 +324,13 @@ class NearestInterpolation(object):
             inImage = mpimg.imread(image.path)
             
             # apply interpolation
-            imgplot.set_interpolation(self.interpolationMode)
+            inImage.set_interpolation(self.interpolationMode)
             
             # create filename
             newPath = _createFileName(image.path, [self.interpolationMode], self.procName)
             
             # write image
-            imgplot.set_cmap('hot')
+            inImage.set_cmap('hot')
             plt.axis('off')
             plt.savefig(newPath,bbox_inches='tight')
             
@@ -349,7 +350,7 @@ class BicubicInterpolation(object):
     modes=["bicubic"]
     
     def __init__(self, interpolationMode):
-        if interpolationMode not in modes:
+        if interpolationMode not in self.modes:
             sys.stderr.write("Unknown image interpolation mode.\n")
             sys.exit("Unknown input.\n")
         self.interpolationMode = interpolationMode
@@ -362,13 +363,13 @@ class BicubicInterpolation(object):
             inImage = mpimg.imread(image.path)
             
             # apply interpolation
-            imgplot.set_interpolation(self.interpolationMode)
+            inImage.set_interpolation(self.interpolationMode)
             
             # create filename
             newPath = _createFileName(image.path, [self.interpolationMode], self.procName)
             
             # write image
-            imgplot.set_cmap('hot')
+            inImage.set_cmap('hot')
             plt.axis('off')
             plt.savefig(newPath,bbox_inches='tight')
             
@@ -388,7 +389,7 @@ class BilinearInterpolation(object):
     modes=["bilinear"]
     
     def __init__(self, interpolationMode):
-        if interpolationMode not in modes:
+        if interpolationMode not in self.modes:
             sys.stderr.write("Unknown image interpolation mode.\n")
             sys.exit("Unknown input.\n")
         self.interpolationMode = interpolationMode
@@ -401,13 +402,13 @@ class BilinearInterpolation(object):
             inImage = mpimg.imread(image.path)
             
             # apply interpolation
-            imgplot.set_interpolation(self.interpolationMode)
+            inImage.set_interpolation(self.interpolationMode)
             
             # create filename
             newPath = _createFileName(image.path, [self.interpolationMode], self.procName)
             
             # write image
-            imgplot.set_cmap('hot')
+            inImage.set_cmap('hot')
             plt.axis('off')
             plt.savefig(newPath,bbox_inches='tight')
             
