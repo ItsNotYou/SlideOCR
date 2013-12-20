@@ -17,6 +17,8 @@ class ParameterParser(object):
         main_group.add_argument("--sourceFile", dest='sourceFile', action='store', help = "Path to an image or video file that will be processed. Video files require the option -e")
         main_group.add_argument("-e", "--extraction", dest='extraction', action='store', help = "Path to a file that contains the frame extraction data")
         main_group.add_argument("--skipAbbyy", dest='skipAbbyy', help="skips ABBYY Cloud OCR processing", action="store_true")
+        main_group.add_argument('--preProcessingBounding', dest='preProcessingBounding', nargs='+', action='store', help='List of preprocessing steps that are exeuted to enhance image quality for bounding box algorithms.')
+        main_group.add_argument('--preProcessingOCR', dest='preProcessingOCR', nargs='+', action='store', help='List of preprocessing steps that are exeuted to enhance image quality for OCR runs.')
         
         gauss_group = self.__parser.add_argument_group("gaussianBlurring")
         gauss_group.add_argument('--sigmaX', dest='sigmaX', type=float, action='store', default=1, help='Gaussian kernel standard deviation in X direction. The higher sigmaX, the stronger the blur effect. Should be a value between 1 and 3.')
@@ -35,8 +37,13 @@ class ParameterParser(object):
         opening_group.add_argument('--px', dest='px', type=int, action='store', default=3, help='Discarded pixel.')
         
         interpol_group = self.__parser.add_argument_group("Interpolation")
-        interpol_group.add_argument('--interpolationMode', dest='interpolationMode', choices=["nearest", "bicubic", "bilinear"], action='store', help='Discarded pixel.')
+        interpol_group.add_argument('--interpolationMode', dest='interpolationMode', default="nearest", choices=["nearest", "bicubic", "bilinear"], action='store', help='Discarded pixel.')
         
+        bounding_group = self.__parser.add_argument_group("BoundingBoxes")
+        bounding_group.add_argument('--minAreaSize', dest='minAreaSize', type=int, default=20, action='store', help='Minimal size of a text area. For detecting small characters use a small value, but you will get quite more boxes as result. ')
+        bounding_group.add_argument('--maxAreaHeight', dest='maxAreaHeight', type=int, default=100, action='store', help='Maximal height of a text area. For detecting large characters, use a large value, but than lines with small characters will be combined in one box, if the sum of their heights is smaller than this maxAreaHeight. ')
+        
+   
    
     def parse(self, args):
         '''
