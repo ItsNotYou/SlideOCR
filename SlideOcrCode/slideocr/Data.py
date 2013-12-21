@@ -11,7 +11,7 @@ class OcrImage:
     '''
     
     # Dictionary containing a history of operations that were executed on this instance
-    metaHistory = {}
+    metaHistory = []
     # Path to the image
     path = None
     # Ocr detected text

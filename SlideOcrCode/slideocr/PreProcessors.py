@@ -126,7 +126,7 @@ class BilateralFiltering(object):
             cv2.imwrite(newPath,outImage)
             
             # add meta informations
-            image.metaHistory[self.procName] = "%s(sigmaColor=%s)" % (self.procName,self.sigmaColor)
+            image.metaHistory.append("%s(sigmaColor=%s)" % (self.procName,self.sigmaColor))
             
             # modify path
             image.path = newPath
@@ -306,29 +306,31 @@ class Interpolation(object):
     def process(self,images):
         
         for image in images:
-            # read in image
-            inImage = mpimg.imread(image.path)
+            # read in image and apply interpolation
+            img = mpimg.imread(image.path)
             
-            # apply interpolation
-            inImage.set_interpolation(self.interpolationMode)
+            fig = plt.figure(frameon=False)
+            ax = plt.Axes(fig, [0., 0., 1., 1.])
+            ax.set_axis_off()
+            fig.add_axes(ax)
             
+            ax.imshow(img, aspect='normal', interpolation=self.interpolationMode)
+             
             # create filename
             newPath = _createFileName(image.path, [self.interpolationMode], self.procName)
             
             # write image
-            inImage.set_cmap('hot')
-            plt.axis('off')
-            plt.savefig(newPath,bbox_inches='tight')
+            fig.savefig(newPath, dpi = 200)
             
             # add meta informations
-            image.metaHistory[self.procName] = "%s(interpolationMode=%s)" % (self.procName,self.interpolationMode)
+            image.metaHistory.append("%s(interpolationMode=%s)" % (self.procName,self.interpolationMode))
             
             # modify path
             image.path = newPath
+
             
         return images
-        
-
+    
 
 class NearestInterpolation(object):
     

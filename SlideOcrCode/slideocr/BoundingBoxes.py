@@ -37,17 +37,20 @@ class BoundingBoxing(object):
             # read in image
             inImage = cv2.imread(image.path,0)
             
+            '''
+            #QUESTION: Why preprocessing here if we have awesome preprocessors? :O
             # convert to grayscale image
-            grayImage = cv2.cvtColor(inImage, cv2.COLOR_BGR2GRAY)
+            grayImage = cv2.cvtColor(inImage, cv2.COLOR_BAYER_BG2BGR)
             
             # apply gauss filter
             blurImage = cv2.GaussianBlur(grayImage, (5, 5), 0)
             
             # binarize to white on black
             binImage = cv2.adaptiveThreshold(blurImage, 255, 1, 1, 11, 2)
+            '''
             
             # find external contorus with simple approximation
-            contours, hierarchy = cv2.findContours(binImage, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            contours, hierarchy = cv2.findContours(inImage, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             
             # for every contour
             for contour in contours:

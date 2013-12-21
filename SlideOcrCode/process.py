@@ -33,7 +33,7 @@ def recognizeFile(extractor, skipAbbyy, preProcessingBounding, preProcessingOCR,
     Bounding
     '''
         
-    bound=BoundingBoxing(args.minAreaSize, args.maxAreaSize)
+    bound=BoundingBoxing(args.minAreaSize, args.maxAreaHeight)
     images=bound.process(images)
     
     '''
@@ -41,8 +41,6 @@ def recognizeFile(extractor, skipAbbyy, preProcessingBounding, preProcessingOCR,
     '''
     if preProcessingOCR != None:
         images = executePreprocessing(pre.prepro_dict, preProcessingOCR, images)
-    
-    
     
     '''
     OCR
@@ -63,14 +61,15 @@ def executePreprocessing(processors, steps, images):
     Output:
         List of OCRimage objects after processing steps
     '''
-    print steps
-    
     for step in steps:
         if step in processors:
             images = processors[step].process(images)
         else:
             sys.stderr.write("Unknown preprocessor "+step+". Available preprocessors are: " + str(processors.keys())+"\n")
             sys.exit("Unknown input.\n")
+    
+    return images  
+            
 
 parser = ParameterParser()
 
