@@ -1,3 +1,4 @@
+
 '''
 Created on 16.12.2013
 
@@ -8,6 +9,8 @@ import time
 import xml.etree.ElementTree as ET
 import base64
 import requests
+from django.template import Template, Context
+from django.conf import settings
 from slideocr.conf.Secrets import Secrets
 from slideocr.Handlers import Ocr
 
@@ -41,13 +44,25 @@ class AbbyyUploader:
     
     appId = None
     pwd = None
+    # processFieldsTemplate = """<?xml version="1.0" encoding="UTF-8"?><document xmlns="http://ocrsdk.com/schema/taskDescription-1.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://ocrsdk.com/schema/taskDescription-1.0.xsd http://ocrsdk.com/schema/taskDescription-1.0.xsd"><fieldTemplates></fieldTemplates><page applyTo="0"><text id="myTextBlock" left="{{ task.image.bounding.left }}" top="{{ task.image.bounding.top }}" right="{{ task.image.bounding.right }}" bottom="{{ task.image.bounding.bottom }}"></text></page></document>  """
+    processFieldsTemplate = """<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://ocrsdk.com/schema/taskDescription-1.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://ocrsdk.com/schema/taskDescription-1.0.xsd http://ocrsdk.com/schema/taskDescription-1.0.xsd">
+
+<fieldTemplates></fieldTemplates>
+
+<page applyTo="0">
+       <text id="myTextBlock" left="{{ task.image.bounding.left }}" top="{{ task.image.bounding.top }}" right="{{ task.image.bounding.right }}" bottom="{{ task.image.bounding.bottom }}">
+       </text>
+</page>
+</document>"""
     
     def __init__(self):
         self.appId = Secrets.ABBYY_APP_ID
         self.pwd = Secrets.ABBYY_PWD
         
     def buildAuthInfo(self):
-        return { "Authorization" : "Basic %s" % base64.encodestring("%s:%s" % (self.appId, self.pwd)) }
+        # Because the data will be sent as a http header we have to remove the line break, otherwise the http network code breaks
+        return {"Authorization" : "Basic %s" % base64.encodestring("%s:%s" % (self.appId, self.pwd)).replace('\n', '')}
     
     def callProcessImage(self, task):
         files = {'file': open(task.image.path, 'rb')}
@@ -88,3 +103,24 @@ class AbbyyUploader:
         for image in images:
             self.processImage(image)
         
+    def callSubmitImage(self, task):
+        files = {'file': open(task.image.path, 'rb')}
+        headers = self.buildAuthInfo()
+        
+        res = requests.post("http://cloud.ocrsdk.com/submitImage", files = files, headers = headers)
+        root = ET.fromstring(res.text)
+        for result in root.findall(".//task"):
+            task.id = result.attrib.get("id")
+        
+    def fillProcessFieldsTemplate(self, task):
+        settings.configure()
+        t = Template(self.processFieldsTemplate)
+        c = Context({"task": task})
+        return t.render(c)
+        
+    def callProcessFields(self, task):
+        request = self.fillProcessFieldsTemplate(task)
+        params = {"taskId": task.id}
+        headers = self.buildAuthInfo()
+        
+        requests.post("http://cloud.ocrsdk.com/processFields", data = request, headers = headers, params = params)
