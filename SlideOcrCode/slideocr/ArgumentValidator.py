@@ -8,5 +8,5 @@ def validateArguments(args):
         print "Error: Corrupt image as source file or source file is a video but you did not define a extraction data file."
         return False
     if (args.workingDirectory == "."):
-        print "Warning: It is recommended to use an working directory different to the execution directory."
+        print "Warning: It is recommended to use a working directory different from the execution directory."
     return True
