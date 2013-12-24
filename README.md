@@ -10,12 +10,16 @@ Where to start
 
 ### Installation ###
 
-The code is written in [Python 2.7][python]. Apart from that we need [OpenCV for Python][opencv] for pre processing, [Tesseract][tesseract] for OCR processing and [FFmpeg][ffmpeg] for frame extraction. Tesseract and FFmpeg have to be in our path variable.
+The code is written in [Python 2.7][python]. Apart from that we need [OpenCV for Python][opencv] for pre processing, [Tesseract][tesseract] for OCR processing and [FFmpeg][ffmpeg] for frame extraction. Tesseract and FFmpeg have to be in our path variable. We recommend the 32-Bit version of every program and library.
 
    [python]: http://www.python.org/download/releases/2.7.6/
    [opencv]: http://opencvpython.blogspot.de/2012/05/install-opencv-in-windows-for-python.html
    [tesseract]: https://code.google.com/p/tesseract-ocr/
    [ffmpeg]: http://www.ffmpeg.org/
+   
+   [dateutil]: http://www.lfd.uci.edu/~gohlke/pythonlibs/#python-dateutil
+   [pyparsing]: http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyparsing
+   [six]: http://www.lfd.uci.edu/~gohlke/pythonlibs/#six
 
 ### Configuration ###
 
@@ -35,7 +39,7 @@ If you don't want to use the ABBYY Cloud OCR SDK, then you should consider speci
 
 The most convenient way to use the program is via executing *process.py*.
 
-    usage: process.py [-h] [-e EXTRACTION] [--skip-abbyy]
+    usage: process.py [-h] [-e EXTRACTION] [--skipAbbyy]
                       workingDirectory sourceFile
     
     Extract text from a video stream of lecture slides
@@ -50,4 +54,4 @@ The most convenient way to use the program is via executing *process.py*.
       -h, --help            show this help message and exit
       -e EXTRACTION, --extraction EXTRACTION
                             Path to a file that contains the frame extraction data
-      --skip-abbyy          skips ABBYY Cloud OCR processing
+      --skipAbbyy          skips ABBYY Cloud OCR processing
