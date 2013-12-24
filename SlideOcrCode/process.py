@@ -5,10 +5,11 @@ Created on 08.12.2013
 '''
 
 from parameter_parser import ParameterParser
-from slideocr.PreProcessors import *
+from slideocr.PreProcessors import PreProcessors
 from slideocr.ocr.OcrEngines import OcrEngines
 from slideocr.VideoExtractor import VideoExtractor, ImageExtractor
 from slideocr.BoundingBoxes import *
+import slideocr.ArgumentValidator as Validator
 
 import sys
 
@@ -18,6 +19,7 @@ def recognizeFile(extractor, skipAbbyy, preProcessingBounding, preProcessingOCR,
     Extract images
     '''
     images = extractor.extract();
+    
     
     
     
@@ -69,6 +71,7 @@ def executePreprocessing(processors, steps, images):
             sys.exit("Unknown input.\n")
     
     return images  
+
             
 
 parser = ParameterParser()
@@ -76,17 +79,18 @@ parser = ParameterParser()
 #parse parameter
 (args,unknown_args) = parser.parse(sys.argv[1:])
 
-workingDirectory = args.workingDirectory
-sourceFile = args.sourceFile
-split = args.extraction
-skipAbbyy = args.skipAbbyy
-preProcessingBounding=args.preProcessingBounding
-preProcessingOCR=args.preProcessingOCR
-
-extractor = None
-if split == None:
-    extractor = ImageExtractor(workingDirectory, sourceFile)
-else:
-    extractor = VideoExtractor(workingDirectory, sourceFile, split)
-
-recognizeFile(extractor, skipAbbyy, preProcessingBounding, preProcessingOCR, args)
+if (Validator.validateArguments(args)):
+    workingDirectory = args.workingDirectory
+    sourceFile = args.sourceFile
+    split = args.extraction
+    skipAbbyy = args.skipAbbyy
+    preProcessingBounding=args.preProcessingBounding
+    preProcessingOCR=args.preProcessingOCR
+    
+    extractor = None
+    if split == None:
+        extractor = ImageExtractor(workingDirectory, sourceFile)
+    else:
+        extractor = VideoExtractor(workingDirectory, sourceFile, split)
+    
+    recognizeFile(extractor, skipAbbyy, preProcessingBounding, preProcessingOCR, args)
