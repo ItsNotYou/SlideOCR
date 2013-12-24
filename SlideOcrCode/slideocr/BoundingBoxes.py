@@ -39,14 +39,12 @@ class BoundingBoxing(object):
             
             '''
             #QUESTION: Why preprocessing here if we have awesome preprocessors? :O
-            # convert to grayscale image
-            grayImage = cv2.cvtColor(inImage, cv2.COLOR_BAYER_BG2BGR)
-            
+            #ANSWER: Because without these preprocessors bounding boxing generates bullshit.
             # apply gauss filter
-            blurImage = cv2.GaussianBlur(grayImage, (5, 5), 0)
+            blurImage = cv2.GaussianBlur(inImage, (5, 5), 0)
             
             # binarize to white on black
-            binImage = cv2.adaptiveThreshold(blurImage, 255, 1, 1, 11, 2)
+            binImage = cv2.adaptiveThreshold(blurImage, 255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY, 11, 2)
             '''
             
             # find external contorus with simple approximation
