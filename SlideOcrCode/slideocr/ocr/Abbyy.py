@@ -14,6 +14,7 @@ from django.conf import settings
 from slideocr.conf.Secrets import Secrets
 from slideocr.Handlers import Ocr
 from slideocr.ocr.OcrCommons import BoundingBoxExtraction
+from ftfy import fix_text
 
 
 class AbbyyCloud(Ocr):
@@ -69,7 +70,7 @@ class AbbyyUploader:
     
     def callProcessImage(self, task):
         files = {'file': open(task.image.boundingPath, 'rb')}
-        params = {"exportFormat": "xml"}
+        params = {"exportFormat": "txt"}
         headers = self.buildAuthInfo()
         
         res = requests.post("http://cloud.ocrsdk.com/processImage", files = files, params = params, headers = headers)
@@ -94,7 +95,9 @@ class AbbyyUploader:
     def downloadResult(self, task):
         headers = self.buildAuthInfo()
         res = requests.get("http://cloud.ocrsdk.com/getResult?taskId=%s" % task.id, headers = headers);
-        task.image.text = res.text.encode("utf-8")
+        text = res.content.decode("utf-8")
+        text = fix_text(text)
+        task.image.text = text
         
     def processImage(self, image):
         task = AbbyyTask()

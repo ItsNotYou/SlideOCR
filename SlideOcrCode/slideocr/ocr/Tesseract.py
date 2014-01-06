@@ -8,6 +8,7 @@ import subprocess
 import os
 from slideocr.Handlers import Ocr
 from slideocr.ocr.OcrCommons import BoundingBoxExtraction
+from ftfy import fix_text
 
 
 class Tesseract(Ocr):
@@ -30,6 +31,8 @@ class Tesseract(Ocr):
             self._runTesseract(path, resultFile, self.language)
             # Tesseract will automatically append the file ending ".txt", so we have to copy this behaviour
             image.text = self._readFileIntoString(resultFile + ".txt")
+            # Clean encoding mistakes
+            image.text = fix_text(image.text.decode("utf-8"))
         return images;
         
         
