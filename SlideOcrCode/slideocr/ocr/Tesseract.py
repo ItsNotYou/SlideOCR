@@ -7,7 +7,7 @@ Created on 16.12.2013
 import subprocess
 import os
 from slideocr.Handlers import Ocr
-from slideocr.ocr.OcrEngines import BoundingBoxExtraction
+from slideocr.ocr.OcrCommons import BoundingBoxExtraction
 
 
 class Tesseract(Ocr):

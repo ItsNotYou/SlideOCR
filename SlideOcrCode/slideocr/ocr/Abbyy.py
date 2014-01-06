@@ -13,14 +13,18 @@ from django.template import Template, Context
 from django.conf import settings
 from slideocr.conf.Secrets import Secrets
 from slideocr.Handlers import Ocr
+from slideocr.ocr.OcrCommons import BoundingBoxExtraction
 
 
 class AbbyyCloud(Ocr):
     '''
     Uploads all images into the abbyy cloud and retreives the detection result
+    If a bounding box is specified, the box is copied into a separate file before detection is executed
     '''
     
     def process(self, images):
+        images = BoundingBoxExtraction().process(images)
+        
         uploader = AbbyyUploader()
         for image in images:
             uploader.processImage(image)
@@ -44,7 +48,6 @@ class AbbyyUploader:
     
     appId = None
     pwd = None
-    # processFieldsTemplate = """<?xml version="1.0" encoding="UTF-8"?><document xmlns="http://ocrsdk.com/schema/taskDescription-1.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://ocrsdk.com/schema/taskDescription-1.0.xsd http://ocrsdk.com/schema/taskDescription-1.0.xsd"><fieldTemplates></fieldTemplates><page applyTo="0"><text id="myTextBlock" left="{{ task.image.bounding.left }}" top="{{ task.image.bounding.top }}" right="{{ task.image.bounding.right }}" bottom="{{ task.image.bounding.bottom }}"></text></page></document>  """
     processFieldsTemplate = """<?xml version="1.0" encoding="UTF-8"?>
 <document xmlns="http://ocrsdk.com/schema/taskDescription-1.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://ocrsdk.com/schema/taskDescription-1.0.xsd http://ocrsdk.com/schema/taskDescription-1.0.xsd">
 
@@ -65,8 +68,7 @@ class AbbyyUploader:
         return {"Authorization" : "Basic %s" % base64.encodestring("%s:%s" % (self.appId, self.pwd)).replace('\n', '')}
     
     def callProcessImage(self, task):
-        files = {'file': open(task.image.path, 'rb')}
-        # params = {"exportFormat": "txt"}
+        files = {'file': open(task.image.boundingPath, 'rb')}
         params = {"exportFormat": "xml"}
         headers = self.buildAuthInfo()
         
