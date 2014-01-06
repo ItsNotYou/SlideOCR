@@ -66,9 +66,11 @@ class AbbyyUploader:
     
     def callProcessImage(self, task):
         files = {'file': open(task.image.path, 'rb')}
+        # params = {"exportFormat": "txt"}
+        params = {"exportFormat": "xml"}
         headers = self.buildAuthInfo()
         
-        res = requests.post("http://cloud.ocrsdk.com/processImage?exportFormat=txt", files = files, headers = headers)
+        res = requests.post("http://cloud.ocrsdk.com/processImage", files = files, params = params, headers = headers)
         root = ET.fromstring(res.text)
         for result in root.findall(".//task"):
             task.id = result.attrib.get("id")
@@ -124,3 +126,17 @@ class AbbyyUploader:
         headers = self.buildAuthInfo()
         
         requests.post("http://cloud.ocrsdk.com/processFields", data = request, headers = headers, params = params)
+        
+    def callProcessTextField(self, task):
+        b = task.image.bounding
+        
+        files = {'file': open(task.image.path, 'rb')}
+        params = {}
+        # params["region"] = "%s,%s,%s,%s" % (str(b.left), str(b.top), str(b.right), str(b.bottom))
+        headers = self.buildAuthInfo()
+        
+        res = requests.post("http://cloud.ocrsdk.com/processTextField", files = files, headers = headers, params = params)
+        root = ET.fromstring(res.text)
+        for result in root.findall(".//task"):
+            task.id = result.attrib.get("id")
+    
