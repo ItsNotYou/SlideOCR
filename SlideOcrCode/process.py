@@ -10,6 +10,7 @@ from slideocr.ocr.OcrEngines import OcrEngines
 from slideocr.VideoExtractor import VideoExtractor, ImageExtractor
 from slideocr.BoundingBoxes import *
 import slideocr.ArgumentValidator as Validator
+from slideocr.BoxMerging import Merging
 
 import sys
 
@@ -37,6 +38,9 @@ def recognizeFile(extractor, skipAbbyy, skipTesseract, preProcessingBounding, pr
         
     bound=BoundingBoxing(args.minAreaSize, args.maxAreaHeight)
     images=bound.process(images)
+    test = Merging()
+    test.process(images,50)
+    
     
     '''
     Preprocessing for OCR

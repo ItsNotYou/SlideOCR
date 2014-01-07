@@ -10,8 +10,8 @@ from slideocr.ocr.Abbyy import AbbyyCloud
 from slideocr.ocr.Tesseract import Tesseract
 
 
-src = "C:\\Users\\hgessner\\workspace\\SlideOCR\\samples\\first_slide.png"
-workspace = "C:\\Users\\hgessner\\workspace\\SlideOCR\\workspace\\"
+src = "C:\\Users\\Matthias\\Documents\\Workspace\\Python\\SlideOCR\\samples\\first_slide.png"
+workspace = "C:\\Users\\Matthias\\Documents\\Workspace\\Python\\SlideOCR\\samples\\working\\"
 bounding = BoundingBox()
 bounding.left = 180
 bounding.top = 560
