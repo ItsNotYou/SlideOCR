@@ -14,7 +14,7 @@ class ParameterParser(object):
         
         main_group = self.__parser.add_argument_group("General")
         main_group.add_argument('--workingDirectory', dest='workingDirectory', action='store', default='.', help='Path to a directory that will be used as temporary workspace')   
-        main_group.add_argument("--sourceFile", dest='sourceFile', action='store', help = "Path to an image or video file that will be processed. Video files require the option -e")
+        main_group.add_argument("--sourceFile", required=True, dest='sourceFile', action='store', help = "Path to an image or video file that will be processed. Video files require the option -e")
         main_group.add_argument("-e", "--extraction", dest='extraction', action='store', help = "Path to a file that contains the frame extraction data")
         main_group.add_argument("--skipAbbyy", dest='skipAbbyy', help="skips ABBYY Cloud OCR processing", action="store_true")
         main_group.add_argument('--preProcessingBounding', dest='preProcessingBounding', nargs='+', action='store', help='List of preprocessing steps that are exeuted to enhance image quality for bounding box algorithms.')
