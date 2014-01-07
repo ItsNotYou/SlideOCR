@@ -1,6 +1,7 @@
 import cv2
 import os
 import copy
+import math
 from slideocr.Data import BoundingBox
 
 '''
@@ -26,9 +27,10 @@ Argument Hints:
 '''
 class BoundingBoxing(object):
     
-    def __init__(self,minAreaSize,maxAreaHeight):
+    def __init__(self,minAreaSize,maxAreaHeight,mergeTreshold):
         self.minAreaSize = minAreaSize
         self.maxAreaHeight = maxAreaHeight
+        self.mergeTreshold = mergeTreshold
     
     procName = "boundingBoxing"
 
@@ -84,7 +86,33 @@ class BoundingBoxing(object):
             '''
             
         return results
+    
+    def merge(self,images):
+        
+        if len(images) == 0 or len == None:
+            return images
+        
+        currentBoundings = []
+        
+        for image in images:
+            currentBoundings.append(image.bounding)
             
+        newSize = 0
+        newBoundings = _mergeHelp(currentBoundings,self.threshold)
+        oldSize = len(newBoundings)
+        while (newSize != oldSize):
+            oldSize = newSize
+            newBoundings = _mergeHelp(newBoundings,self.threshold)
+            newSize = len(newBoundings)
+            
+        newImages = []
+            
+        for bounding in newBoundings:
+            image = copy.deepcopy(images[0])
+            image.bounding = bounding
+            newImages.append(image)
+            
+        return newImages
             
 # creates the file name of an output image        
 def _createFileName(path,argList,procName):
@@ -94,5 +122,71 @@ def _createFileName(path,argList,procName):
     for arg in argList:
         add += "_" + str(arg)
     return os.path.join(head,name + "_%s%s" % (procName,add) + ext)
+
+
+def _mergeHelp(oldBoundings,threshold):
+    
+    currentBoundingArray = []
+
+    for oldBounding in oldBoundings:
+        
+        newBoundingArray = []
+        
+        flag = True
+        
+        for currentBounding in currentBoundingArray:
+            
+            if ((_nextTo(currentBounding,oldBounding,threshold) or _inIt(currentBounding,oldBounding)) and _ifSameLine(currentBounding,oldBounding)):
+                
+                newBoundingBox = BoundingBox()
+                newBoundingBox.left = min(currentBounding.left,oldBounding.left)
+                newBoundingBox.right = max(currentBounding.right,oldBounding.right)
+                newBoundingBox.top = min(currentBounding.top,oldBounding.top)
+                newBoundingBox.bottom = max(currentBounding.bottom,oldBounding.bottom)
+                
+                newBoundingArray.append(newBoundingBox)
+                flag = False
+                
+            else:
+                newBoundingArray.append(currentBounding)
+        
+        if (flag):
+            newBoundingArray.append(copy.deepcopy(oldBounding))
+            
+            
+        currentBoundingArray = newBoundingArray;
+        flag = True     
+        
+    return currentBoundingArray         
+                
+ 
+def _nextTo(bounding1,bounding2,threshold):
+    
+    if (math.fabs(bounding1.right - bounding2.left) < threshold or \
+        math.fabs(bounding2.right - bounding1.left) < threshold ):
+        
+        return True
+    
+    return False               
+
+
+def _ifSameLine(bounding1,bounding2):
+    
+    if (bounding1.top >= bounding2.top and bounding1.top <= bounding2.bottom or \
+        bounding2.top >= bounding1.top and bounding2.top <= bounding1.bottom):
+        
+        return True
+    
+    return False
+
+def _inIt(bounding1,bounding2):
+    if (bounding1.left >= bounding2.left and bounding1.left <= bounding2.right or \
+        bounding1.right >= bounding2.left and bounding1.right <= bounding2.right or \
+        bounding2.left >= bounding1.left and bounding2.left <= bounding1.right or \
+        bounding2.right >= bounding1.left and bounding2.right <= bounding1.right):
+        
+        return True
+    
+    return False
     
    
