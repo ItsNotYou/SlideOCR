@@ -1,5 +1,7 @@
 import cv2
 import os
+import copy
+from slideocr.Data import BoundingBox
 
 '''
 Processor class providing a method to a apply bounding boxes on text areas. The algorithm works best on canny edge outputs, 
@@ -33,21 +35,10 @@ class BoundingBoxing(object):
     # processing method
     def process(self,images):
 
+        results = []
         for image in images:
-            # read in image
-            inImage = cv2.imread(image.path,0)
-            
-            '''
-            #QUESTION: Why preprocessing here if we have awesome preprocessors? :O
-            #ANSWER: Because without these preprocessors bounding boxing generates bullshit.
-            # apply gauss filter
-            blurImage = cv2.GaussianBlur(inImage, (5, 5), 0)
-            
-            # binarize to white on black
-            binImage = cv2.adaptiveThreshold(blurImage, 255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY, 11, 2)
-            '''
-            
             # find external contorus with simple approximation
+            inImage = cv2.imread(image.path, 0)
             contours, hierarchy = cv2.findContours(inImage, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             
             # for every contour
@@ -61,10 +52,24 @@ class BoundingBoxing(object):
 
                     # if the contour is smaller than the maxAreaHeight threshold
                     if height < self.maxAreaHeight:
+                        
+                        boundIm = cv2.imread(image.path,1)
 
                         # draw the bounding box on the image
-                        cv2.rectangle(inImage, (x, y), (x+width, y+height), (0, 0, 255), 2)
-            
+                        cv2.rectangle(boundIm, (x, y), (x+width, y+height), (0, 0, 255), 2)
+                        
+                        # write image
+                        cv2.imwrite(image.path,boundIm)
+                        
+                        boundedImage = copy.deepcopy(image)
+                        boundedImage.bounding = BoundingBox()
+                        boundedImage.bounding.left = x
+                        boundedImage.bounding.top = y
+                        boundedImage.bounding.right = x + width
+                        boundedImage.bounding.bottom = y + height
+                        results.append(boundedImage)
+
+            '''
             # create filename
             newPath = _createFileName(image.path, [self.minAreaSize,self.maxAreaHeight], self.procName)
             
@@ -76,8 +81,9 @@ class BoundingBoxing(object):
             
             # modify path
             image.path = newPath
+            '''
             
-        return images
+        return results
             
             
 # creates the file name of an output image        

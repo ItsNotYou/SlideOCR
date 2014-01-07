@@ -17,8 +17,9 @@ class OcrEngines(Ocr):
     
     engines = []
     
-    def __init__(self, skipAbbyy = False):
-        self.engines.append(Tesseract())
+    def __init__(self, skipAbbyy = False, skipTesseract = False):
+        if not skipTesseract:
+            self.engines.append(Tesseract())
         if not skipAbbyy:
             self.engines.append(AbbyyCloud())
     

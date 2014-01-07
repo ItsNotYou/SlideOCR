@@ -37,6 +37,9 @@ class PreProcessors(PreProcessing):
         
         self.interpolation = Interpolation(args.interpolationMode)
         self.prepro_dict[self.interpolation.procName] = self.interpolation
+        
+        self.grayscaleFilter = GrayscaleFilter()
+        self.prepro_dict[self.grayscaleFilter.procName] = self.grayscaleFilter
     
     def process(self, images):
         if self.bilateralFiltering:
@@ -53,7 +56,7 @@ Additional Informations: http://docs.opencv.org/modules/imgproc/doc/filtering.ht
 
 Argument Hints: 
     sigmaX: Gaussian kernel standard deviation in X direction. The higher sigmaX, the stronger the blur effect. 
-        Should be a value between 1 and 3. (Standard = 1)
+        Should be a value between 0 and 3. (Standard = 0)
 '''
 class GaussianBlurring(object):
     
@@ -67,10 +70,10 @@ class GaussianBlurring(object):
         
         for image in images:
             # read in image
-            inImage = cv2.imread(image.path,1)
+            inImage = cv2.imread(image.path)
         
             # apply filter
-            outImage = cv2.GaussianBlur(inImage,(0,0),self.sigmaX)
+            outImage = cv2.GaussianBlur(inImage,(5,5),self.sigmaX)
         
             # create filename
             newPath = _createFileName(image.path, [self.sigmaX], self.procName)
@@ -175,6 +178,31 @@ class SimpleThresholding(object):
             
         return images
 
+
+class GrayscaleFilter(object):
+    
+    procName = "grayscaleFilter"
+
+    # processing method
+    def process(self,images):
+        
+        for image in images:
+            # create filename
+            newPath = _createFileName(image.path, [], self.procName)
+            
+            # apply grayscale filter
+            inImage = cv2.imread(image.path)
+            outImage = cv2.cvtColor(inImage, cv2.COLOR_BGR2GRAY)
+            cv2.imwrite(newPath, outImage)
+
+            # add meta informations
+            image.metaHistory.append("%s" % self.procName)
+            
+            # modify path
+            image.path = newPath
+            
+        return images
+
         
 '''
 Processor class providing a method to a apply the Adaptive Thresholding (Adaptive Binarization). The algorithm calculate 
@@ -206,7 +234,7 @@ class AdaptiveThresholding(object):
             inImage = cv2.imread(image.path,0)
             
             # apply filter
-            outImage = cv2.adaptiveThreshold(inImage,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,self.blockSize,self.C)
+            outImage = cv2.adaptiveThreshold(inImage,255,1,1,self.blockSize,self.C)
             
             # create filename
             newPath = _createFileName(image.path, [self.blockSize,self.C], self.procName)

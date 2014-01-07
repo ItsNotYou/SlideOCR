@@ -13,7 +13,7 @@ import slideocr.ArgumentValidator as Validator
 
 import sys
 
-def recognizeFile(extractor, skipAbbyy, preProcessingBounding, preProcessingOCR, args):
+def recognizeFile(extractor, skipAbbyy, skipTesseract, preProcessingBounding, preProcessingOCR, args):
     
     '''
     Extract images
@@ -47,7 +47,7 @@ def recognizeFile(extractor, skipAbbyy, preProcessingBounding, preProcessingOCR,
     '''
     OCR
     '''
-    ocr = OcrEngines(skipAbbyy)
+    ocr = OcrEngines(skipAbbyy, skipTesseract)
     images = ocr.process(images)
     for image in images:
         print image.text
@@ -84,6 +84,7 @@ if (Validator.validateArguments(args)):
     sourceFile = args.sourceFile
     split = args.extraction
     skipAbbyy = args.skipAbbyy
+    skipTesseract=args.skipTesseract
     preProcessingBounding=args.preProcessingBounding
     preProcessingOCR=args.preProcessingOCR
     
@@ -93,4 +94,4 @@ if (Validator.validateArguments(args)):
     else:
         extractor = VideoExtractor(workingDirectory, sourceFile, split)
     
-    recognizeFile(extractor, skipAbbyy, preProcessingBounding, preProcessingOCR, args)
+    recognizeFile(extractor, skipAbbyy, skipTesseract, preProcessingBounding, preProcessingOCR, args)
