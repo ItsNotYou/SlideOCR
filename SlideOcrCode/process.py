@@ -41,6 +41,7 @@ def recognizeFile(extractor, skipAbbyy, skipTesseract, preProcessingBounding, pr
     bound=BoundingBoxing(args.minAreaSize, args.maxAreaHeight)
     images=bound.process(images)
     
+    
     '''
     Restore original paths for OCR pre processing
     '''
