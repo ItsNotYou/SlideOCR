@@ -9,15 +9,8 @@ import subprocess
 import uuid
 import os
 import numpy
-from slideocr.Data import OcrImage
-
-
-class FrameTimestamp:
-    
-    tag = None
-    minutes = 0.
-    seconds = 0.
-    videoPath = None
+from slideocr.Data import OcrImage, FrameTimestamp
+from slideocr.MySqlWrapper import MySqlTimestampReader
 
 
 class TableReader:
@@ -109,7 +102,25 @@ class ExtractionHelper:
         images = FrameExtractor(workingDirectory).mapTimestampsToFrames(timestamps)
         return images
     
+    def convertVideoByDatabase(self, videoId, workingDirectory):
+        timestamps = MySqlTimestampReader().readTimestamps(videoId)
+        images = FrameExtractor(workingDirectory).mapTimestampsToFrames(timestamps)
+        return images
+    
 
+class MySqlVideoExtractor:
+    
+    workingDirectory = None
+    videoId = None
+    
+    def __init__(self, workingDirectory, videoId):
+        self.workingDirectory = workingDirectory
+        self.videoId = videoId
+        
+    def extract(self):
+        return ExtractionHelper().convertVideoByDatabase(self.videoId, self.workingDirectory)
+        
+        
 class VideoExtractor:
     
     workingDirectory = None

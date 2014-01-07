@@ -29,3 +29,11 @@ class BoundingBox:
     top = 0
     bottom = 0
     
+    
+class FrameTimestamp:
+    
+    tag = None
+    minutes = 0.
+    seconds = 0.
+    videoPath = None
+    

@@ -7,7 +7,7 @@ Created on 08.12.2013
 from parameter_parser import ParameterParser
 from slideocr.PreProcessors import PreProcessors
 from slideocr.ocr.OcrEngines import OcrEngines
-from slideocr.VideoExtractor import VideoExtractor, ImageExtractor
+from slideocr.VideoExtractor import VideoExtractor, ImageExtractor, MySqlVideoExtractor
 from slideocr.BoundingBoxes import BoundingBoxing
 import slideocr.ArgumentValidator as Validator
 
@@ -92,15 +92,18 @@ if (Validator.validateArguments(args)):
     workingDirectory = args.workingDirectory
     sourceFile = args.sourceFile
     split = args.extraction
+    isVideoId = args.isVideoId
     skipAbbyy = args.skipAbbyy
     skipTesseract=args.skipTesseract
     preProcessingBounding=args.preProcessingBounding
     preProcessingOCR=args.preProcessingOCR
     
     extractor = None
-    if split == None:
-        extractor = ImageExtractor(workingDirectory, sourceFile)
-    else:
+    if isVideoId:
+        extractor = MySqlVideoExtractor(workingDirectory, sourceFile)
+    elif split != None:
         extractor = VideoExtractor(workingDirectory, sourceFile, split)
+    else:
+        extractor = ImageExtractor(workingDirectory, sourceFile)
     
     recognizeFile(extractor, skipAbbyy, skipTesseract, preProcessingBounding, preProcessingOCR, args)
