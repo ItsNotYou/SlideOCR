@@ -37,6 +37,9 @@ class PreProcessors(PreProcessing):
         
         self.interpolation = Interpolation(args.interpolationMode)
         self.prepro_dict[self.interpolation.procName] = self.interpolation
+        
+        self.grayscaleFilter = GrayscaleFilter()
+        self.prepro_dict[self.grayscaleFilter.procName] = self.grayscaleFilter
     
     def process(self, images):
         if self.bilateralFiltering:
@@ -169,6 +172,31 @@ class SimpleThresholding(object):
         
             # add meta informations
             image.metaHistory.append("%s(thresh=%s)" % (self.procName,self.thresh))
+            
+            # modify path
+            image.path = newPath
+            
+        return images
+
+
+class GrayscaleFilter(object):
+    
+    procName = "grayscaleFilter"
+
+    # processing method
+    def process(self,images):
+        
+        for image in images:
+            # create filename
+            newPath = _createFileName(image.path, [], self.procName)
+            
+            # apply grayscale filter
+            inImage = cv2.imread(image.path)
+            outImage = cv2.cvtColor(inImage, cv2.COLOR_BGR2GRAY)
+            cv2.imwrite(newPath, outImage)
+
+            # add meta informations
+            image.metaHistory.append("%s" % self.procName)
             
             # modify path
             image.path = newPath

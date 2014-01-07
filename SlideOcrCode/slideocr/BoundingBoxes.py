@@ -39,18 +39,13 @@ class BoundingBoxing(object):
         for image in images:
             print "Working on", image.path
             
-            # apply grayscale filter
-            inImage = cv2.imread(image.path)
-            grayScale = cv2.cvtColor(inImage, cv2.COLOR_BGR2GRAY)
-            cv2.imwrite(image.path, grayScale)
-            
             # apply gauss filter
             inImage = cv2.imread(image.path, 0)
             blurImage = cv2.GaussianBlur(inImage, (5, 5), 0)
             cv2.imwrite(image.path, blurImage)
             
             # binarize to white on black
-            inImage = cv2.imread(image.path)
+            inImage = cv2.imread(image.path, 0)
             binImage = cv2.adaptiveThreshold(inImage, 255,1,1, 11, 2)
             cv2.imwrite(image.path, binImage)
             
@@ -70,25 +65,22 @@ class BoundingBoxing(object):
 
                     # if the contour is smaller than the maxAreaHeight threshold
                     if height < self.maxAreaHeight:
+                        
+                        boundIm = cv2.imread(image.path,1)
 
                         # draw the bounding box on the image
-                        cv2.rectangle(inImage, (x, y), (x+width, y+height), (0, 0, 255), 2)
-                        
-                        # create filename
-                        newPath = _createFileName(image.path, ["spaaaaaaaaaaace",self.minAreaSize,self.maxAreaHeight], self.procName)
+                        cv2.rectangle(boundIm, (x, y), (x+width, y+height), (0, 0, 255), 2)
                         
                         # write image
-                        cv2.imwrite(newPath,inImage)
+                        cv2.imwrite(image.path,boundIm)
                         
-                    boundedImage = copy.deepcopy(image)
-                    boundedImage.bounding = BoundingBox()
-                    boundedImage.bounding.left = x
-                    boundedImage.bounding.top = y
-                    boundedImage.bounding.right = x + width
-                    boundedImage.bounding.bottom = y + height
-                    results.append(boundedImage)
-                    
-                    print boundedImage.bounding.left, boundedImage.bounding.top, boundedImage.bounding.right, boundedImage.bounding.bottom
+                        boundedImage = copy.deepcopy(image)
+                        boundedImage.bounding = BoundingBox()
+                        boundedImage.bounding.left = x
+                        boundedImage.bounding.top = y
+                        boundedImage.bounding.right = x + width
+                        boundedImage.bounding.bottom = y + height
+                        results.append(boundedImage)
 
             '''
             # create filename
