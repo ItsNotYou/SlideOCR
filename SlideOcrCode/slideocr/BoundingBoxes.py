@@ -39,11 +39,6 @@ class BoundingBoxing(object):
         for image in images:
             print "Working on", image.path
             
-            # apply gauss filter
-            inImage = cv2.imread(image.path, 0)
-            blurImage = cv2.GaussianBlur(inImage, (5, 5), 0)
-            cv2.imwrite(image.path, blurImage)
-            
             # binarize to white on black
             inImage = cv2.imread(image.path, 0)
             binImage = cv2.adaptiveThreshold(inImage, 255,1,1, 11, 2)

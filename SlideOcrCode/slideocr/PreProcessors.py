@@ -70,7 +70,7 @@ class GaussianBlurring(object):
         
         for image in images:
             # read in image
-            inImage = cv2.imread(image.path,1)
+            inImage = cv2.imread(image.path)
         
             # apply filter
             outImage = cv2.GaussianBlur(inImage,(5,5),self.sigmaX)
