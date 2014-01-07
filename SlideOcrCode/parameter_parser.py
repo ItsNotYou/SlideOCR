@@ -44,6 +44,7 @@ class ParameterParser(object):
         bounding_group = self.__parser.add_argument_group("BoundingBoxes")
         bounding_group.add_argument('--minAreaSize', dest='minAreaSize', type=int, default=20, action='store', help='Minimal size of a text area. For detecting small characters use a small value, but you will get quite more boxes as result. ')
         bounding_group.add_argument('--maxAreaHeight', dest='maxAreaHeight', type=int, default=100, action='store', help='Maximal height of a text area. For detecting large characters, use a large value, but than lines with small characters will be combined in one box, if the sum of their heights is smaller than this maxAreaHeight. ')
+        bounding_group.add_argument('--mergeThreshold', dest='mergeThreshold', type=int, default=50, action='store', help='Merging threshold to combine bounding boxes.')
         
    
    

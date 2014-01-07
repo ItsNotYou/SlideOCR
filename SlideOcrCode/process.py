@@ -38,7 +38,7 @@ def recognizeFile(extractor, skipAbbyy, skipTesseract, preProcessingBounding, pr
     '''
     Bounding
     '''
-    bound=BoundingBoxing(args.minAreaSize, args.maxAreaHeight)
+    bound=BoundingBoxing(args.minAreaSize, args.maxAreaHeight, args.mergeThreshold)
     images=bound.process(images)
     
     

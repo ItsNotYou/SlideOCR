@@ -84,8 +84,8 @@ class BoundingBoxing(object):
             # modify path
             image.path = newPath
             '''
-            
-        return results
+        
+        return self.merge(results)
     
     def merge(self,images):
         
@@ -98,11 +98,11 @@ class BoundingBoxing(object):
             currentBoundings.append(image.bounding)
             
         newSize = 0
-        newBoundings = _mergeHelp(currentBoundings,self.threshold)
+        newBoundings = _mergeHelp(currentBoundings,self.mergeTreshold)
         oldSize = len(newBoundings)
         while (newSize != oldSize):
             oldSize = newSize
-            newBoundings = _mergeHelp(newBoundings,self.threshold)
+            newBoundings = _mergeHelp(newBoundings,self.mergeTreshold)
             newSize = len(newBoundings)
             
         newImages = []
