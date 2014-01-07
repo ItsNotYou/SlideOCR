@@ -8,7 +8,7 @@ from parameter_parser import ParameterParser
 from slideocr.PreProcessors import PreProcessors
 from slideocr.ocr.OcrEngines import OcrEngines
 from slideocr.VideoExtractor import VideoExtractor, ImageExtractor
-from slideocr.BoundingBoxes import *
+from slideocr.BoundingBoxes import BoundingBoxing
 import slideocr.ArgumentValidator as Validator
 
 import sys
@@ -20,8 +20,12 @@ def recognizeFile(extractor, skipAbbyy, skipTesseract, preProcessingBounding, pr
     '''
     images = extractor.extract();
     
-    
-    
+    '''
+    Save original paths for later OCR pre processing
+    '''
+    originalPaths = {}
+    for image in images:
+        originalPaths[image.frameId] = image.path
     
     '''
     Preprocessing for bounding
@@ -34,9 +38,14 @@ def recognizeFile(extractor, skipAbbyy, skipTesseract, preProcessingBounding, pr
     '''
     Bounding
     '''
-        
     bound=BoundingBoxing(args.minAreaSize, args.maxAreaHeight)
     images=bound.process(images)
+    
+    '''
+    Restore original paths for OCR pre processing
+    '''
+    for image in images:
+        image.path = originalPaths[image.frameId]
     
     '''
     Preprocessing for OCR
