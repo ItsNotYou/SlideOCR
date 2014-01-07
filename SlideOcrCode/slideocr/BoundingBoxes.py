@@ -37,14 +37,6 @@ class BoundingBoxing(object):
 
         results = []
         for image in images:
-            print "Working on", image.path
-            
-            # binarize to white on black
-            inImage = cv2.imread(image.path, 0)
-            binImage = cv2.adaptiveThreshold(inImage, 255,1,1, 11, 2)
-            cv2.imwrite(image.path, binImage)
-            
-            
             # find external contorus with simple approximation
             inImage = cv2.imread(image.path, 0)
             contours, hierarchy = cv2.findContours(inImage, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
