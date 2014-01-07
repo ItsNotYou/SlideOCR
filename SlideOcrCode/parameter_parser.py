@@ -21,7 +21,7 @@ class ParameterParser(object):
         main_group.add_argument('--preProcessingOCR', dest='preProcessingOCR', nargs='+', action='store', help='List of preprocessing steps that are exeuted to enhance image quality for OCR runs.')
         
         gauss_group = self.__parser.add_argument_group("gaussianBlurring")
-        gauss_group.add_argument('--sigmaX', dest='sigmaX', type=float, action='store', default=1, help='Gaussian kernel standard deviation in X direction. The higher sigmaX, the stronger the blur effect. Should be a value between 1 and 3.')
+        gauss_group.add_argument('--sigmaX', dest='sigmaX', type=float, action='store', default=0, help='Gaussian kernel standard deviation in X direction. The higher sigmaX, the stronger the blur effect. Should be a value between 0 and 3.')
         
         bil_group = self.__parser.add_argument_group("bilateralFiltering")
         bil_group.add_argument('--sigmaColor', dest='sigmaColor', type=float, action='store', default=75, help='Filter sigma in the color space. A larger value of the parameter means that farther colors within the pixel neighborhood (see sigmaSpace ) will be mixed together, resulting in larger areas of semi-equal color.The higher sigmaColor, the stronger the blur effect.')

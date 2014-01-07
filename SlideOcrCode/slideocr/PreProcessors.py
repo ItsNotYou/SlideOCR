@@ -53,7 +53,7 @@ Additional Informations: http://docs.opencv.org/modules/imgproc/doc/filtering.ht
 
 Argument Hints: 
     sigmaX: Gaussian kernel standard deviation in X direction. The higher sigmaX, the stronger the blur effect. 
-        Should be a value between 1 and 3. (Standard = 1)
+        Should be a value between 0 and 3. (Standard = 0)
 '''
 class GaussianBlurring(object):
     
@@ -70,7 +70,7 @@ class GaussianBlurring(object):
             inImage = cv2.imread(image.path,1)
         
             # apply filter
-            outImage = cv2.GaussianBlur(inImage,(0,0),self.sigmaX)
+            outImage = cv2.GaussianBlur(inImage,(5,5),self.sigmaX)
         
             # create filename
             newPath = _createFileName(image.path, [self.sigmaX], self.procName)
@@ -206,7 +206,7 @@ class AdaptiveThresholding(object):
             inImage = cv2.imread(image.path,0)
             
             # apply filter
-            outImage = cv2.adaptiveThreshold(inImage,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,self.blockSize,self.C)
+            outImage = cv2.adaptiveThreshold(inImage,255,1,1,self.blockSize,self.C)
             
             # create filename
             newPath = _createFileName(image.path, [self.blockSize,self.C], self.procName)
