@@ -67,12 +67,14 @@ class FrameExtractor:
         for timestamp in timestamps:
             seconds = timestamp.minutes * 60 + timestamp.seconds
             tag = timestamp.tag
+            uniqueId = uuid.uuid4()
             sourcePath = timestamp.videoPath
-            targetPath = self._createFileName(tag, '.png')
+            targetPath = self._createFileName(tag, uniqueId, '.png')
             self.extractFrame(seconds, sourcePath, targetPath);
             
             ocrImage = OcrImage()
             ocrImage.path = targetPath
+            ocrImage.frameId = uniqueId
             results.append(ocrImage)
         return results;
     
@@ -82,9 +84,8 @@ class FrameExtractor:
         subprocess.call([self.procPath, "-loglevel", "warning", "-ss", str(seconds - self.slowSearchDelta), "-i", sourcePath, "-ss", str(self.slowSearchDelta), "-vframes", "1", targetPath]);
         
         
-    def _createFileName(self, prefix, extension):
-        # creates the file name of an output image        
-        uniqueId = uuid.uuid4()
+    def _createFileName(self, prefix, uniqueId, extension):
+        # creates the file name of an output image
         return os.path.join(self.pathToWorkspace, prefix + "_" + str(uniqueId) + extension)
 
 
@@ -99,6 +100,7 @@ class ExtractionHelper:
         
         images = [OcrImage()]
         images[0].path = targetFile
+        images[0].frameId = uuid.uuid4()
         return images
     
     

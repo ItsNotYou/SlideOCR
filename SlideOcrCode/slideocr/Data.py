@@ -18,6 +18,8 @@ class OcrImage:
     text = None
     # Bounding box
     bounding = None
+    # Globally unique frame id that identifies an image or subimage of a video frame
+    frameId = None
 
 
 class BoundingBox:
