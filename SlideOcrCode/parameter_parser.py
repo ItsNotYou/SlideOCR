@@ -17,6 +17,7 @@ class ParameterParser(object):
         main_group.add_argument("--sourceFile", required=True, dest='sourceFile', action='store', help = "Path to an image or video file that will be processed. Video files require the option -e")
         main_group.add_argument("-e", "--extraction", dest='extraction', action='store', help = "Path to a file that contains the frame extraction data")
         main_group.add_argument("--skipAbbyy", dest='skipAbbyy', help="skips ABBYY Cloud OCR processing", action="store_true")
+        main_group.add_argument("--skipTesseract", dest='skipTesseract', help="skips Tesseract OCR processing", action="store_true")
         main_group.add_argument('--preProcessingBounding', dest='preProcessingBounding', nargs='+', action='store', help='List of preprocessing steps that are exeuted to enhance image quality for bounding box algorithms.')
         main_group.add_argument('--preProcessingOCR', dest='preProcessingOCR', nargs='+', action='store', help='List of preprocessing steps that are exeuted to enhance image quality for OCR runs.')
         
