@@ -55,6 +55,7 @@ class BoundingBoxing(object):
                     # if the contour is smaller than the maxAreaHeight threshold
                     if height < self.maxAreaHeight:
                         
+                        '''
                         boundIm = cv2.imread(image.path,1)
 
                         # draw the bounding box on the image
@@ -62,6 +63,7 @@ class BoundingBoxing(object):
                         
                         # write image
                         cv2.imwrite(image.path,boundIm)
+                        '''
                         
                         boundedImage = copy.deepcopy(image)
                         boundedImage.bounding = BoundingBox()
@@ -92,25 +94,44 @@ class BoundingBoxing(object):
         if len(images) == 0 or len == None:
             return images
         
-        currentBoundings = []
+        oldBoundingsDic = {}
+        imageDic = {}
         
         for image in images:
-            currentBoundings.append(image.bounding)
-            
-        newSize = 0
-        newBoundings = _mergeHelp(currentBoundings,self.mergeTreshold)
-        oldSize = len(newBoundings)
-        while (newSize != oldSize):
-            oldSize = newSize
-            newBoundings = _mergeHelp(newBoundings,self.mergeTreshold)
-            newSize = len(newBoundings)
+            if image.frameId not in oldBoundingsDic:
+                oldBoundingsDic[image.frameId] = [image.bounding]
+                imageDic[image.frameId] = image
+            else:
+                oldBoundingsDic[image.frameId].append(image.bounding)
+                
+        newBoundingsDic = {}
+                
+        for frameid,currentBoundings in oldBoundingsDic.iteritems():
+                
+            newSize = 0
+            newBoundings = _mergeHelp(currentBoundings,self.mergeTreshold)
+            oldSize = len(newBoundings)
+            while (newSize != oldSize):
+                oldSize = newSize
+                newBoundings = _mergeHelp(newBoundings,self.mergeTreshold)
+                newSize = len(newBoundings)
+                
+            newBoundingsDic[frameid] = newBoundings
             
         newImages = []
-            
-        for bounding in newBoundings:
-            image = copy.deepcopy(images[0])
-            image.bounding = bounding
-            newImages.append(image)
+        
+        for frameid, newBoundings in newBoundingsDic.iteritems():
+            image = imageDic[frameid]
+            boundIm = cv2.imread(image.path,1)
+            for newBounding in newBoundings:
+                newImage = copy.deepcopy(image)
+                newImage.bounding = newBounding
+                newImages.append(newImage)
+              
+                # draw the bounding box on the image
+                cv2.rectangle(boundIm, (newBounding.left, newBounding.top), (newBounding.right, newBounding.bottom), (0, 0, 255), 2)
+                
+            cv2.imwrite(image.path,boundIm)
             
         return newImages
             
