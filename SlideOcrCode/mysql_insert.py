@@ -20,6 +20,7 @@ db = MySQLdb.connect(host="localhost", user=Secrets.MYSQL_USER, passwd=Secrets.M
 with db:
     cur = db.cursor()
     
+    cur.execute("DELETE FROM ocrresult")
     cur.execute("DELETE FROM segment")
     cur.execute("DELETE FROM video")
     cur.execute("DELETE FROM videotype")
