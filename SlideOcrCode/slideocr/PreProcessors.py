@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
-import os
 from slideocr.Handlers import PreProcessing
+from slideocr.Helper import FileNameCreator
 
 class PreProcessors(PreProcessing):
     '''
@@ -76,7 +76,7 @@ class GaussianBlurring(object):
             outImage = cv2.GaussianBlur(inImage,(5,5),self.sigmaX)
         
             # create filename
-            newPath = _createFileName(image.path, [self.sigmaX], self.procName)
+            newPath = FileNameCreator.createFileName(image.path, [self.sigmaX], self.procName)
         
             # write image
             cv2.imwrite(newPath,outImage)
@@ -123,7 +123,7 @@ class BilateralFiltering(object):
             outImage = cv2.bilateralFilter(inImage,9,self.sigmaColor,75)
             
             # create filename
-            newPath = _createFileName(image.path, [self.sigmaColor], self.procName)
+            newPath = FileNameCreator.createFileName(image.path, [self.sigmaColor], self.procName)
             
             # write image
             cv2.imwrite(newPath,outImage)
@@ -165,7 +165,7 @@ class SimpleThresholding(object):
             _,outImage = cv2.threshold(inImage,self.thresh,255,cv2.THRESH_BINARY)
             
             # create filename
-            newPath = _createFileName(image.path, [self.thresh], self.procName)
+            newPath = FileNameCreator.createFileName(image.path, [self.thresh], self.procName)
             
             # write image
             cv2.imwrite(newPath,outImage)
@@ -188,7 +188,7 @@ class GrayscaleFilter(object):
         
         for image in images:
             # create filename
-            newPath = _createFileName(image.path, [], self.procName)
+            newPath = FileNameCreator.createFileName(image.path, [], self.procName)
             
             # apply grayscale filter
             inImage = cv2.imread(image.path)
@@ -237,7 +237,7 @@ class AdaptiveThresholding(object):
             outImage = cv2.adaptiveThreshold(inImage,255,1,1,self.blockSize,self.C)
             
             # create filename
-            newPath = _createFileName(image.path, [self.blockSize,self.C], self.procName)
+            newPath = FileNameCreator.createFileName(image.path, [self.blockSize,self.C], self.procName)
             
             # write image
             cv2.imwrite(newPath,outImage)
@@ -279,7 +279,7 @@ class Opening(object):
             outImage = cv2.morphologyEx(inImage, cv2.MORPH_OPEN, kernel)
             
             # create filename
-            newPath = _createFileName(image.path, [self.px], self.procName)
+            newPath = FileNameCreator.createFileName(image.path, [self.px], self.procName)
             
             # write image
             cv2.imwrite(newPath,outImage)
@@ -291,16 +291,6 @@ class Opening(object):
             image.path = newPath
             
         return images
-            
-
-# creates the file name of an output image        
-def _createFileName(path,argList,procName):
-    (head, tail) = os.path.split(path)
-    (name, ext) = os.path.splitext(tail)
-    add = ""
-    for arg in argList:
-        add += "_" + str(arg)
-    return os.path.join(head,name + "_%s%s" % (procName,add) + ext)
     
         
 
@@ -315,7 +305,6 @@ Argument Hints:
 
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
-import numpy as np
 import sys
 
 class Interpolation(object):
@@ -345,7 +334,7 @@ class Interpolation(object):
             ax.imshow(img, aspect='normal', interpolation=self.interpolationMode)
              
             # create filename
-            newPath = _createFileName(image.path, [self.interpolationMode], self.procName)
+            newPath = FileNameCreator.createFileName(image.path, [self.interpolationMode], self.procName)
             
             # write image
             fig.savefig(newPath, dpi = 200)
@@ -405,17 +394,16 @@ Reflection maybe needed for later usage.
 Discarded because of varying parameters.
 '''        
    
-import sys
 import inspect
 
 def print_preprocessors():
-    for name, obj in inspect.getmembers(sys.modules[__name__]):
+    for _, obj in inspect.getmembers(sys.modules[__name__]):
         if inspect.isclass(obj) and hasattr(obj, "procName"):
             print obj.procName
             
 def get_preprocessors():
     prepro_list=[]
-    for name, obj in inspect.getmembers(sys.modules[__name__]):
+    for _, obj in inspect.getmembers(sys.modules[__name__]):
         if inspect.isclass(obj) and hasattr(obj, "procName"):
             prepro_list.append(obj)
     return prepro_list

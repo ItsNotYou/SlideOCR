@@ -43,7 +43,7 @@ class BoundingBoxing(object):
         for image in images:
             # find external contours with simple approximation
             inImage = cv2.imread(image.path, 0)
-            contours, hierarchy = cv2.findContours(inImage, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            contours, _ = cv2.findContours(inImage, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             
             # for every contour
             for contour in contours:
