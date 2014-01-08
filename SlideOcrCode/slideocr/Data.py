@@ -20,6 +20,8 @@ class OcrImage:
     bounding = None
     # Globally unique frame id that identifies an image or subimage of a video frame
     frameId = None
+    # Human understandble description of the type of the detected text (caption, footer etc.)
+    contentType = None
 
 
 class BoundingBox:

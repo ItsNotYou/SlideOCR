@@ -12,6 +12,7 @@ from slideocr.BoundingBoxes import BoundingBoxing
 import slideocr.ArgumentValidator as Validator
 
 import sys
+from slideocr.MySqlWrapper import MySqlResultWriter
 
 def recognizeFile(extractor, skipAbbyy, skipTesseract, preProcessingBounding, preProcessingOCR, args):
     
@@ -59,10 +60,21 @@ def recognizeFile(extractor, skipAbbyy, skipTesseract, preProcessingBounding, pr
     '''
     ocr = OcrEngines(skipAbbyy, skipTesseract)
     images = ocr.process(images)
+    
+    '''
+    Simple post filter process: Remove empty text
+    '''
+    nonEmptyImages = []
     for image in images:
-        print image.text
-        
-        
+        if image.text:
+            nonEmptyImages.append(image)
+            
+    '''
+    Write result into source
+    '''
+    extractor.write(nonEmptyImages)
+    
+    
 def executePreprocessing(processors, steps, images):
     '''
     Method for chaining several preprocessing steps.

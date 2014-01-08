@@ -10,6 +10,7 @@ from slideocr.conf.Secrets import Secrets
 
 
 videoUrl = "C:\\Users\\hgessner\\workspace\\SlideOCR\\samples\\desktop.mp4"
+shortVideoUrl = "C:\\Users\\hgessner\\workspace\\SlideOCR\\samples\\short.mp4"
 splitTable = "C:\\Users\\hgessner\\workspace\\SlideOCR\\samples\\slide-timestamps.txt"
 
 splits = TableReader().readTimestamps(splitTable, videoUrl)
@@ -33,6 +34,14 @@ with db:
     idValue = 10001
     for split in splits:
         cur.execute("INSERT INTO segment (id, video_id, start, best_index) VALUES (%d, 1000, '0:%d:%d', '0:%d:%d')" % (idValue, split.minutes, split.seconds, split.minutes, split.seconds))
+        idValue += 1
+        
+    cur.execute("INSERT INTO video (id, lecture, videotype, url) VALUES (2000, 10, 100, '%s')" % shortVideoUrl.replace("\\", "\\\\"))
+    
+    idValue = 20001
+    for split in splits:
+        if split.minutes < 5:
+            cur.execute("INSERT INTO segment (id, video_id, start, best_index) VALUES (%d, 2000, '0:%d:%d', '0:%d:%d')" % (idValue, split.minutes, split.seconds, split.minutes, split.seconds))
         idValue += 1
     
     cur.execute("SELECT id, url FROM video")

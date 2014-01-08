@@ -10,7 +10,7 @@ import uuid
 import os
 import numpy
 from slideocr.Data import OcrImage, FrameTimestamp
-from slideocr.MySqlWrapper import MySqlTimestampReader
+from slideocr.MySqlWrapper import MySqlTimestampReader, MySqlResultWriter
 
 
 class TableReader:
@@ -66,6 +66,7 @@ class FrameExtractor:
             self.extractFrame(seconds, sourcePath, targetPath);
             
             ocrImage = OcrImage()
+            ocrImage.tag = tag
             ocrImage.path = targetPath
             ocrImage.frameId = uniqueId
             results.append(ocrImage)
@@ -119,6 +120,10 @@ class MySqlVideoExtractor:
         
     def extract(self):
         return ExtractionHelper().convertVideoByDatabase(self.videoId, self.workingDirectory)
+    
+    def write(self, images):
+        writer = MySqlResultWriter()
+        writer.writeResults(images)
         
         
 class VideoExtractor:
@@ -135,6 +140,10 @@ class VideoExtractor:
     def extract(self):
         return ExtractionHelper().convertVideoByTable(self.videoPath, self.splitPath, self.workingDirectory)
     
+    def write(self, images):
+        for image in images:
+            print image.text
+    
     
 class ImageExtractor:
     
@@ -147,4 +156,8 @@ class ImageExtractor:
         
     def extract(self):
         return ExtractionHelper().convertSingleImage(self.imagePath, self.workingDirectory)
+    
+    def write(self, images):
+        for image in images:
+            print image.text
     
