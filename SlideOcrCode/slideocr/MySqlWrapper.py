@@ -73,7 +73,6 @@ class MySqlResultWriter(DbConnection):
                 self.__writeRow(cursor, image, ocrTypeId)
         
     def __writeRow(self, cursor, image, ocrTypeId):
-        print "INSERT INTO ocrresult (segment_id, kord_lt_x, kord_lt_y, kord_rb_x, kord_rb_y, content) VALUES (%s, %f, %f, %f, %f, '%s')" % (image.tag, float(image.bounding.left), float(image.bounding.top), float(image.bounding.right), float(image.bounding.bottom), MySQLdb.escape_string(image.text))
         if ocrTypeId == None:
             cursor.execute("INSERT INTO ocrresult (segment_id, kord_lt_x, kord_lt_y, kord_rb_x, kord_rb_y, content) VALUES (%s, %f, %f, %f, %f, '%s')" % (image.tag, float(image.bounding.left), float(image.bounding.top), float(image.bounding.right), float(image.bounding.bottom), MySQLdb.escape_string(image.text)))
         else:
