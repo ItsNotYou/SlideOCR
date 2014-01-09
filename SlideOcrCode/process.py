@@ -4,15 +4,15 @@ Created on 08.12.2013
 @author: hgessner
 '''
 
+import sys
+import slideocr.ArgumentValidator as Validator
 from parameter_parser import ParameterParser
 from slideocr.PreProcessors import PreProcessors
 from slideocr.ocr.OcrEngines import OcrEngines
 from slideocr.VideoExtractor import VideoExtractor, ImageExtractor, MySqlVideoExtractor
 from slideocr.BoundingBoxes import BoundingBoxing
-import slideocr.ArgumentValidator as Validator
+from slideocr.TextClassificator import TextClassificator
 
-import sys
-from slideocr.MySqlWrapper import MySqlResultWriter
 
 def recognizeFile(extractor, skipAbbyy, skipTesseract, preProcessingBounding, preProcessingOCR, args):
     
@@ -68,6 +68,12 @@ def recognizeFile(extractor, skipAbbyy, skipTesseract, preProcessingBounding, pr
     for image in images:
         if image.text:
             nonEmptyImages.append(image)
+            
+    '''
+    Text classification
+    '''
+    classificator = TextClassificator(args.heightOffset)
+    classificator.classify(nonEmptyImages)
             
     '''
     Write result into source

@@ -46,6 +46,9 @@ class ParameterParser(object):
         bounding_group.add_argument('--maxAreaHeight', dest='maxAreaHeight', type=int, default=100, action='store', help='Maximal height of a text area. For detecting large characters, use a large value, but than lines with small characters will be combined in one box, if the sum of their heights is smaller than this maxAreaHeight. ')
         bounding_group.add_argument('--mergeThreshold', dest='mergeThreshold', type=int, default=50, action='store', help='Merging threshold to combine bounding boxes.')
         
+        text_class_group = self.__parser.add_argument_group("textClassification")
+        text_class_group.add_argument('--heightOffset', dest='heightOffset', default=10, action='store', type=int, help='Distance of caption and footing to the average text height.')
+        
    
    
     def parse(self, args):
