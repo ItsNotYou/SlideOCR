@@ -73,11 +73,17 @@ class MySqlResultWriter(DbConnection):
         for image in self.images:
             print image.tag, image.text
             self.__safelyWriteRow(cursor, image, availableSegmentIds, ocrDict)
-                
+            
     def __safelyWriteRow(self, cursor, image, availableSegmentIds, ocrDict):
         if int(image.tag) in availableSegmentIds:
-            ocrTypeId = ocrDict[image.contentType or self.fallbackContentType]
+            ocrTypeId = self.__findMatchingKey(ocrDict, image.contentType)
             self.__writeRow(cursor, image, ocrTypeId)
+            
+    def __findMatchingKey(self, ocrDict, contentType):
+        if contentType and contentType in ocrDict:
+            return ocrDict[contentType]
+        else:
+            return ocrDict[self.fallbackContentType]
         
     def __writeRow(self, cursor, image, ocrTypeId):
         '''

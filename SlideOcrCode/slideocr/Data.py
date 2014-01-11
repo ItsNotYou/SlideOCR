@@ -22,6 +22,9 @@ class OcrImage:
     frameId = None
     # Human understandble description of the type of the detected text (caption, footer etc.)
     contentType = None
+    
+    def __str__(self):
+        return 'FrameId: %s Path: "%s" Bounding: %s' % (self.frameId, self.path, self.bounding)
 
 
 class BoundingBox:
@@ -30,6 +33,9 @@ class BoundingBox:
     right = 0
     top = 0
     bottom = 0
+    
+    def __str__(self):
+        return "[%d %d %d %d]" % (self.left, self.top, self.right, self.bottom)
     
     
 class FrameTimestamp:
