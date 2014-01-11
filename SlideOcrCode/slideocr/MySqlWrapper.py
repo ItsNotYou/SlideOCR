@@ -18,7 +18,11 @@ class DbConnection:
             self.doRun(cur)
             
     def doRun(self, cursor):
+        '''
+        Execute database specific code here
+        '''
         print "Nothing to do"
+        print "Overwrite method in subclasses to do specific database stuff"
 
 
 class MySqlTimestampReader(DbConnection):
@@ -55,41 +59,54 @@ class MySqlTimestampReader(DbConnection):
         
         
 class MySqlResultWriter(DbConnection):
+    '''
+    Writes recognition results into the database.
+    '''
     
     images = []
+    fallbackContentType = "undefined"
     
     def doRun(self, cursor):
-        '''
-        Beware the SQL injection?
-        '''
         ocrDict = self.__readAvailableOcrTypes(cursor)
         availableSegmentIds = self.__readAvailableSegmentIds(cursor)
         
         for image in self.images:
-            if int(image.tag) in availableSegmentIds:
-                ocrTypeId = None
-                if image.contentType in ocrDict:
-                    ocrTypeId = ocrDict[image.contentType]
-                self.__writeRow(cursor, image, ocrTypeId)
+            print image.tag, image.text
+            self.__safelyWriteRow(cursor, image, availableSegmentIds, ocrDict)
+                
+    def __safelyWriteRow(self, cursor, image, availableSegmentIds, ocrDict):
+        if int(image.tag) in availableSegmentIds:
+            ocrTypeId = ocrDict[image.contentType or self.fallbackContentType]
+            self.__writeRow(cursor, image, ocrTypeId)
         
     def __writeRow(self, cursor, image, ocrTypeId):
+        '''
+        Beware the SQL injection?
+        '''
         if ocrTypeId == None:
             cursor.execute("INSERT INTO ocrresult (segment_id, kord_lt_x, kord_lt_y, kord_rb_x, kord_rb_y, content) VALUES (%s, %f, %f, %f, %f, '%s')" % (image.tag, float(image.bounding.left), float(image.bounding.top), float(image.bounding.right), float(image.bounding.bottom), MySQLdb.escape_string(image.text)))
         else:
-            cursor.execute("INSERT INTO ocrresult (segment_id, type, kord_lt_x, kord_lt_y, kord_rb_x, kord_rb_y, content) VALUES (%s, %d, %f, %f, %f, %f, '%s')" % (image.tag, ocrTypeId, float(image.bounding.left), float(image.bounding.top), float(image.bounding.right), float(image.bounding.bottom), MySQLdb.escape_string(image.text)))
+            cursor.execute("INSERT INTO ocrresult (segment_id, kord_lt_x, kord_lt_y, kord_rb_x, kord_rb_y, content, type) VALUES (%s, %f, %f, %f, %f, '%s', %d)" % (image.tag, float(image.bounding.left), float(image.bounding.top), float(image.bounding.right), float(image.bounding.bottom), MySQLdb.escape_string(image.text), ocrTypeId))
         
     def __readAvailableOcrTypes(self, cursor):
         ocrDict = {}
+        
         cursor.execute("SELECT id, description FROM ocrtype")
         for row in cursor.fetchall():
             ocrDict[row[1]] = row[0]
+            
+        if not self.fallbackContentType in ocrDict:
+            ocrDict[self.fallbackContentType] = None
+            
         return ocrDict
     
     def __readAvailableSegmentIds(self, cursor):
         availableSegments = []
+        
         cursor.execute("SELECT id FROM segment")
         for row in cursor.fetchall():
             availableSegments.append(row[0])
+            
         return availableSegments
         
     def writeResults(self, images):
