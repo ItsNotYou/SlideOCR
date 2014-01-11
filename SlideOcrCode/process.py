@@ -14,7 +14,7 @@ from slideocr.BoundingBoxes import BoundingBoxing
 from slideocr.TextClassificator import TextClassificator
 
 
-def recognizeFile(extractor, skipAbbyy, skipTesseract, preProcessingBounding, preProcessingOCR, args):
+def recognizeFile(extractor, skipAbbyy, skipTesseract, preProcessingBounding, preProcessingOCR, tesseractLanguage, args):
     
     '''
     Extract images
@@ -58,7 +58,7 @@ def recognizeFile(extractor, skipAbbyy, skipTesseract, preProcessingBounding, pr
     '''
     OCR
     '''
-    ocr = OcrEngines(skipAbbyy, skipTesseract)
+    ocr = OcrEngines(skipAbbyy, skipTesseract, tesseractLanguage)
     images = ocr.process(images)
     
     '''
@@ -116,6 +116,7 @@ if (Validator.validateArguments(args)):
     skipTesseract=args.skipTesseract
     preProcessingBounding=args.preProcessingBounding
     preProcessingOCR=args.preProcessingOCR
+    tesseractLanguage=args.tesseractLanguage
     
     extractor = None
     if isVideoId:
@@ -125,4 +126,4 @@ if (Validator.validateArguments(args)):
     else:
         extractor = ImageExtractor(workingDirectory, sourceFile)
     
-    recognizeFile(extractor, skipAbbyy, skipTesseract, preProcessingBounding, preProcessingOCR, args)
+    recognizeFile(extractor, skipAbbyy, skipTesseract, preProcessingBounding, preProcessingOCR, tesseractLanguage, args)

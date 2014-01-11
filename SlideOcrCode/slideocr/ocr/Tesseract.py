@@ -19,8 +19,10 @@ class Tesseract(Ocr):
     
     procName = "tesseract"
     procPath = "tesseract"
-    # Default: detect language as english
-    language = "eng"
+    language = None
+    
+    def __init__(self, language):
+        self.language = language
     
     def process(self, images):
         images = BoundingBoxExtraction().process(images)

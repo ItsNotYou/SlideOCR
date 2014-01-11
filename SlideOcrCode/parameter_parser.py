@@ -49,6 +49,8 @@ class ParameterParser(object):
         text_class_group = self.__parser.add_argument_group("textClassification")
         text_class_group.add_argument('--heightOffset', dest='heightOffset', default=10, action='store', type=int, help='Distance of caption and footing to the average text height.')
         
+        ocr_group = self.__parser.add_argument_group("ocrOptions")
+        ocr_group.add_argument('--tesseractLanguage', dest='tesseractLanguage', default="eng", action='store', type=str, help='Tesseract recognition language')
    
    
     def parse(self, args):
