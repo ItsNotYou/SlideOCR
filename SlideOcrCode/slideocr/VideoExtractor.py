@@ -142,7 +142,8 @@ class VideoExtractor:
     
     def write(self, images):
         for image in images:
-            print image.text
+            #print image.text
+            print image.text + " (" + image.contentType + ")"
     
     
 class ImageExtractor:
