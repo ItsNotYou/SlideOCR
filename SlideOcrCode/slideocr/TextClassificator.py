@@ -29,17 +29,17 @@ class TextClassificator(object):
                 imageDic[image.frameId].append(image)
                 
         # calculate the average height of the text in an image and classify the text
-        for _,images in imageDic.iteritems():
+        for _,Dicmages in imageDic.iteritems():
         
             heightSum = 0
             
-            for image in images:
+            for image in Dicmages:
                 currentHeight = image.bounding.bottom - image.bounding.top
                 heightSum += currentHeight
                
-            averageHeight = heightSum / len(images)
+            averageHeight = heightSum / len(Dicmages)
             
-            for image in images:
+            for image in Dicmages:
                 currentHeight = image.bounding.bottom - image.bounding.top
                 
                 if currentHeight > averageHeight + self.heightOffset:
