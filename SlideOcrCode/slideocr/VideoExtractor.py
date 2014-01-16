@@ -160,5 +160,5 @@ class ImageExtractor:
     
     def write(self, images):
         for image in images:
-            print image.text
+            print image.text + " (" + image.contentType + ")" + " height=" + str(image.bounding.bottom-image.bounding.top)
     

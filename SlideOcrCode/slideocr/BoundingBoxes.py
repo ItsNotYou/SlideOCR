@@ -131,7 +131,7 @@ class BoundingBoxing(object):
             for newBounding in newBoundings:
                 newImage = copy.deepcopy(image)
                 newImage.bounding = newBounding
-                wideBox(newImage,self.boxWideningValue)
+                wideBox(newImage,self.boxWideningValue,boundIm)
                 newImages.append(newImage)
               
                 # draw the bounding box on the image
@@ -234,9 +234,10 @@ def _overlaps(bounding1,bounding2):
     
     return False
 
-def wideBox(image, boxWideningValue):
+def wideBox(image, boxWideningValue, boundIm):
+    height, width, _ = boundIm.shape
     image.bounding.left = image.bounding.left - boxWideningValue if image.bounding.left - boxWideningValue >= 0 else image.bounding.left
     image.bounding.top = image.bounding.top - boxWideningValue if image.bounding.top - boxWideningValue >= 0 else image.bounding.top
-    image.bounding.right = image.bounding.right + boxWideningValue if image.bounding.right + boxWideningValue >= 0 else image.bounding.right
-    image.bounding.bottom = image.bounding.bottom  + boxWideningValue if image.bounding.bottom  + boxWideningValue >= 0 else image.bounding.bottom 
+    image.bounding.right = image.bounding.right + boxWideningValue if image.bounding.right + boxWideningValue <= width else image.bounding.right
+    image.bounding.bottom = image.bounding.bottom  + boxWideningValue if image.bounding.bottom  + boxWideningValue <= height else image.bounding.bottom 
     
