@@ -12,6 +12,9 @@ from slideocr.ocr.OcrEngines import OcrEngines
 from slideocr.VideoExtractor import VideoExtractor, ImageExtractor, MySqlVideoExtractor
 from slideocr.BoundingBoxes import BoundingBoxing
 from slideocr.TextClassificator import TextClassificator
+from ConfigParser import ConfigParser
+import shlex
+import argparse
 
 
 def recognizeFile(extractor, skipAbbyy, skipTesseract, preProcessingBounding, preProcessingOCR, tesseractLanguage, args):
@@ -125,10 +128,25 @@ def compare(ocrImage1,ocrImage2):
         
             
 
+
+#parse parameter to check for config file
+parser = argparse.ArgumentParser(description="Extract text from a video stream of lecture slides")
+parser.add_argument('--configFile', dest='configFile', action='store', help='Path to config-file.')
+args = parser.parse_args(sys.argv[1:])
+
+#determine source of arguments, if config file is given config file is argument source else command line
+if args.configFile != None:
+    config = ConfigParser()
+    config.read(args.configFile)
+    config_value = config.get('config', 'options')
+    argument_list = shlex.split(config_value)
+else:
+    argument_list = sys.argv[1:]
+
 parser = ParameterParser()
 
-#parse parameter
-(args,unknown_args) = parser.parse(sys.argv[1:])
+(args, unknown_args)=parser.parse(argument_list)
+
 
 if (Validator.validateArguments(args)):
     workingDirectory = args.workingDirectory
