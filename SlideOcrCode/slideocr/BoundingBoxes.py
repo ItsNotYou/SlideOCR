@@ -29,10 +29,11 @@ Argument Hints:
 '''
 class BoundingBoxing(object):
     
-    def __init__(self,minAreaSize,maxAreaHeight,mergeTreshold):
+    def __init__(self,minAreaSize,maxAreaHeight,mergeTreshold,boxWideningValue):
         self.minAreaSize = minAreaSize
         self.maxAreaHeight = maxAreaHeight
         self.mergeTreshold = mergeTreshold
+        self.boxWideningValue = boxWideningValue
     
     procName = "boundingBoxing"
 
@@ -67,7 +68,9 @@ class BoundingBoxing(object):
                         results.append(boundedImage)
         
         # merge the resulting bounding boxes and return them
-        return self.merge(results)
+        newResult = self.merge(results)
+            
+        return newResult
     
     '''
     This method merges bounding boxes in the same image, if they are close to each other
@@ -128,6 +131,7 @@ class BoundingBoxing(object):
             for newBounding in newBoundings:
                 newImage = copy.deepcopy(image)
                 newImage.bounding = newBounding
+                wideBox(newImage,self.boxWideningValue)
                 newImages.append(newImage)
               
                 # draw the bounding box on the image
@@ -135,6 +139,8 @@ class BoundingBoxing(object):
                 
             # write the new image
             cv2.imwrite(image.path,boundIm)
+            
+       
          
         # return the images with the new bounds   
         return newImages
@@ -227,4 +233,10 @@ def _overlaps(bounding1,bounding2):
         return True
     
     return False
+
+def wideBox(image, boxWideningValue):
+    image.bounding.left = image.bounding.left - boxWideningValue if image.bounding.left - boxWideningValue >= 0 else image.bounding.left
+    image.bounding.top = image.bounding.top - boxWideningValue if image.bounding.top - boxWideningValue >= 0 else image.bounding.top
+    image.bounding.right = image.bounding.right + boxWideningValue if image.bounding.right + boxWideningValue >= 0 else image.bounding.right
+    image.bounding.bottom = image.bounding.bottom  + boxWideningValue if image.bounding.bottom  + boxWideningValue >= 0 else image.bounding.bottom 
     

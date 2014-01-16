@@ -22,6 +22,8 @@ class OcrImage:
     frameId = None
     # Human understandble description of the type of the detected text (caption, footer etc.)
     contentType = None
+    #tag
+    tag = 0
     
     def __str__(self):
         return 'FrameId: %s Path: "%s" Bounding: %s' % (self.frameId, self.path, self.bounding)
