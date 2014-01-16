@@ -66,19 +66,24 @@ def recognizeFile(extractor, skipAbbyy, skipTesseract, preProcessingBounding, pr
     '''
     nonEmptyImages = []
     for image in images:
-        if image.text:
+        if image.text.strip():
             nonEmptyImages.append(image)
-            
+    
     '''
     Text classification
     '''
     classificator = TextClassificator(args.heightOffset)
     classificator.classify(nonEmptyImages)
+     
+    '''
+    Sort List
+    '''
+    sortedNonEmptyImages = sorted(nonEmptyImages,cmp=compare)
             
     '''
     Write result into source
     '''
-    extractor.write(nonEmptyImages)
+    extractor.write(sortedNonEmptyImages)
     
     
 def executePreprocessing(processors, steps, images):
@@ -100,6 +105,24 @@ def executePreprocessing(processors, steps, images):
     
     return images  
 
+def compare(ocrImage1,ocrImage2):
+    if (ocrImage1.tag < ocrImage2.tag):
+        return -1
+    elif (ocrImage1.tag > ocrImage2.tag):
+        return 1
+    else:
+        if (ocrImage1.bounding.top < ocrImage2.bounding.top):
+            return -1
+        elif (ocrImage1.bounding.top > ocrImage2.bounding.top):
+            return 1
+        else:
+            if (ocrImage1.bounding.left < ocrImage2.bounding.left):
+                return -1
+            elif (ocrImage1.bounding.left > ocrImage2.bounding.left):
+                return 1
+            else:
+                return 0
+        
             
 
 parser = ParameterParser()
