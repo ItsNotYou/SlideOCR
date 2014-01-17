@@ -11,6 +11,7 @@ import os
 import numpy
 from slideocr.Data import OcrImage, FrameTimestamp
 from slideocr.MySqlWrapper import MySqlTimestampReader, MySqlResultWriter
+from slideocr.ZipWrapper import ZipWrapper
 
 
 class TableReader:
@@ -97,7 +98,6 @@ class ExtractionHelper:
         images[0].frameId = uuid.uuid4()
         return images
     
-    
     def convertVideoByTable(self, videoPath, tablePath, workingDirectory):
         timestamps = TableReader().readTimestamps(tablePath, videoPath)
         images = FrameExtractor(workingDirectory).mapTimestampsToFrames(timestamps)
@@ -106,6 +106,13 @@ class ExtractionHelper:
     def convertVideoByDatabase(self, videoId, workingDirectory):
         timestamps = MySqlTimestampReader().readTimestamps(videoId)
         images = FrameExtractor(workingDirectory).mapTimestampsToFrames(timestamps)
+        return images
+    
+    def convertZip(self, zipPath, workingDirectory):
+        wrapper = ZipWrapper()
+        zippedFiles = wrapper.extractFiles(zipPath, workingDirectory)
+        zippedFiles = wrapper.renameFiles(zippedFiles, workingDirectory)
+        images = wrapper.asImages(zippedFiles)
         return images
     
 
@@ -156,6 +163,23 @@ class ImageExtractor:
         
     def extract(self):
         return ExtractionHelper().convertSingleImage(self.imagePath, self.workingDirectory)
+    
+    def write(self, images):
+        for image in images:
+            print image.text
+    
+    
+class ZipExtractor:
+    
+    workingDirectory = None
+    zipPath = None
+    
+    def __init__(self, workingDirectory, zipPath):
+        self.workingDirectory = workingDirectory
+        self.zipPath = zipPath
+        
+    def extract(self):
+        return ExtractionHelper().convertZip(self.zipPath, self.workingDirectory)
     
     def write(self, images):
         for image in images:
