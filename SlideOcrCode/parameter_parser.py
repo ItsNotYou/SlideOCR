@@ -19,8 +19,8 @@ class ParameterParser(object):
         main_group.add_argument("--videoId", dest='isVideoId', action='store_true', help = "Set if sourceFile is an ID of a video that contains the frame extraction data")
         main_group.add_argument("--skipAbbyy", dest='skipAbbyy', help="skips ABBYY Cloud OCR processing", action="store_true")
         main_group.add_argument("--skipTesseract", dest='skipTesseract', help="skips Tesseract OCR processing", action="store_true")
-        main_group.add_argument('--preProcessingBounding', dest='preProcessingBounding', nargs='+', action='store', help='List of pre processing steps that are executed to enhance image quality for bounding box algorithms.')
-        main_group.add_argument('--preProcessingOCR', dest='preProcessingOCR', nargs='+', action='store', help='List of pre processing steps that are executed to enhance image quality for OCR runs.')
+        main_group.add_argument('--preProcessingBounding', dest='preProcessingBounding', default=['grayscaleFilter', 'gaussianBlurring', 'adaptiveThresholding'], nargs='+', action='store', help='List of pre processing steps that are executed to enhance image quality for bounding box algorithms.')
+        main_group.add_argument('--preProcessingOCR', dest='preProcessingOCR', default=['grayscaleFilter'], nargs='+', action='store', help='List of pre processing steps that are executed to enhance image quality for OCR runs.')
         
         gauss_group = self.__parser.add_argument_group("gaussianBlurring")
         gauss_group.add_argument('--sigmaX', dest='sigmaX', type=float, action='store', default=0, help='Gaussian kernel standard deviation in X direction. The higher sigmaX, the stronger the blur effect. Should be a value between 0 and 3.')
