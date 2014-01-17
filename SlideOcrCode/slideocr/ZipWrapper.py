@@ -24,21 +24,26 @@ class ZipWrapper:
             oldFile = os.path.join(workspacePath, zippedFile.filename);
             renamedFile = self._createFileName(oldFile, str(uuid.uuid4()))
             os.rename(oldFile, renamedFile)
-            results.append(renamedFile)
+            
+            result = OcrImage()
+            result.tag = self._getName(oldFile)
+            result.path = renamedFile
+            results.append(result)
         return results
     
     def asImages(self, images):
-        results = []
         for image in images:
-            result = OcrImage()
-            result.path = image
-            result.frameId = uuid.uuid4()
-            results.append(result)
-        return results
+            image.frameId = uuid.uuid4()
+        return images
     
     def _createFileName(self, path, uniqueId):
         # creates the file name of an output image        
         (head, tail) = os.path.split(path)
         (name, ext) = os.path.splitext(tail)
         return os.path.join(head,name + "_%s" % uniqueId + ext)
+    
+    def _getName(self, path):
+        (head, tail) = os.path.split(path)
+        (name, ext) = os.path.splitext(tail)
+        return name
     

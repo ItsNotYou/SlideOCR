@@ -10,6 +10,7 @@ class OcrImage:
     May contain properties like position (for bounding boxes), tag (for identification across different ocr engines) or byteRepresentation (for content representation)
     '''
     
+    tag = None
     # Dictionary containing a history of operations that were executed on this instance
     metaHistory = []
     # Path to the image

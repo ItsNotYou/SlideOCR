@@ -94,6 +94,7 @@ class ExtractionHelper:
         shutil.copyfile(imagePath, targetFile)
         
         images = [OcrImage()]
+        images[0].tag = "01"
         images[0].path = targetFile
         images[0].frameId = uuid.uuid4()
         return images
