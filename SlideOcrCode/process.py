@@ -131,25 +131,29 @@ def compare(ocrImage1,ocrImage2):
             
 
 
+#determine source of arguments
 #parse parameter to check for config file
 parser = argparse.ArgumentParser(description="Extract text from a video stream of lecture slides")
 parser.add_argument('--configFile', dest='configFile', action='store', help='Path to config-file.')
-args = parser.parse_args(sys.argv[1:])
+(args, unknown_args) = parser.parse_known_args(sys.argv[1:])
 
-#determine source of arguments, if config file is given config file is argument source else command line
+argument_list=[]
+
+#if config file is given append options from config file
 if args.configFile != None:
     config = ConfigParser()
     config.read(args.configFile)
     config_value = config.get('config', 'options')
-    argument_list = shlex.split(config_value)
-else:
-    argument_list = sys.argv[1:]
+    argument_list.extend(shlex.split(config_value))
+
+#append arguments from commandline    
+argument_list.extend(sys.argv[1:])
 
 parser = ParameterParser()
 
 (args, unknown_args)=parser.parse(argument_list)
 
-
+#assign parameters and execute program if arguments are validated
 if (Validator.validateArguments(args)):
     workingDirectory = args.workingDirectory
     sourceFile = args.sourceFile
