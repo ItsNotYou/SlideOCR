@@ -10,6 +10,7 @@ class OcrImage:
     May contain properties like position (for bounding boxes), tag (for identification across different ocr engines) or byteRepresentation (for content representation)
     '''
     
+    tag = None
     # Dictionary containing a history of operations that were executed on this instance
     metaHistory = []
     # Path to the image
@@ -22,8 +23,6 @@ class OcrImage:
     frameId = None
     # Human understandble description of the type of the detected text (caption, footer etc.)
     contentType = None
-    #tag
-    tag = 0
     
     def __str__(self):
         return 'FrameId: %s Path: "%s" Bounding: %s' % (self.frameId, self.path, self.bounding)
