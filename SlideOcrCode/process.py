@@ -9,9 +9,11 @@ import slideocr.ArgumentValidator as Validator
 from parameter_parser import ParameterParser
 from slideocr.PreProcessors import PreProcessors
 from slideocr.ocr.OcrEngines import OcrEngines
-from slideocr.VideoExtractor import VideoExtractor, ImageExtractor, MySqlVideoExtractor
+from slideocr.VideoExtractor import VideoExtractor, ImageExtractor, MySqlVideoExtractor,\
+    ZipExtractor
 from slideocr.BoundingBoxes import BoundingBoxing
 from slideocr.TextClassificator import TextClassificator
+import zipfile
 
 
 def recognizeFile(extractor, skipAbbyy, skipTesseract, preProcessingBounding, preProcessingOCR, tesseractLanguage, args):
@@ -123,6 +125,8 @@ if (Validator.validateArguments(args)):
         extractor = MySqlVideoExtractor(workingDirectory, sourceFile)
     elif split != None:
         extractor = VideoExtractor(workingDirectory, sourceFile, split)
+    elif zipfile.is_zipfile(sourceFile):
+        extractor = ZipExtractor(workingDirectory, sourceFile)
     else:
         extractor = ImageExtractor(workingDirectory, sourceFile)
     
