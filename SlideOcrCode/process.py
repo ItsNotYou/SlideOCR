@@ -131,7 +131,7 @@ def compare(ocrImage1,ocrImage2):
 
 #determine source of arguments
 #parse parameter to check for config file
-parser = argparse.ArgumentParser(description="Extract text from a video stream of lecture slides")
+parser = argparse.ArgumentParser(description="Extract text from a video stream of lecture slides", add_help=False)
 parser.add_argument('--configFile', dest='configFile', action='store', help='Path to config-file.')
 (args, unknown_args) = parser.parse_known_args(sys.argv[1:])
 
