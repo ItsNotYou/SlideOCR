@@ -7,6 +7,7 @@ Created on 21.01.2014
 import os
 import subprocess
 import sys
+import shutil
 
 # Adjust according to system
 pythonInstallDir = "C:\\Python27\\"
@@ -34,3 +35,11 @@ if not os.path.exists(pipPath):
     call([pythonPath, ez_setup])
     call([pythonPath, get_pip])
 
+call([pipPath, "-q", "install", "requests"])
+call([pipPath, "-q", "install", "ftfy"])
+
+shutil.copyfile(os.path.join(installPath, "cv2.pyd"), os.path.join(pythonInstallDir, "Lib\site-packages", "cv2.pyd"))
+
+call([os.path.join(installPath, "numpy-1.8.0-win32-superpack-python2.7.exe")])
+call([os.path.join(installPath, "python-dateutil-2.2.win32-py2.7.exe")])
+call([os.path.join(installPath, "MySQL-python-1.2.5.win32-py2.7.exe")])
