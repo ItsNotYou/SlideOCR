@@ -14,7 +14,7 @@ class ParameterParser(object):
         
         main_group = self.__parser.add_argument_group("General")
         main_group.add_argument('--workingDirectory', dest='workingDirectory', action='store', default='.', help='Path to a directory that will be used as temporary workspace')   
-        main_group.add_argument("--sourceFile", required=True, dest='sourceFile', action='store', help = "Path to an image or video file that will be processed. Video files require the option -e")
+        main_group.add_argument("--sourceFile", required=True, dest='sourceFile', action='store', help = "Path to an image, a zipped set of images or a video file that will be processed. Video files require the option -e")
         main_group.add_argument("-e", "--extraction", dest='extraction', action='store', help = "Path to a file that contains the frame extraction data")
         main_group.add_argument("--videoId", dest='isVideoId', action='store_true', help = "Set if sourceFile is an ID of a video that contains the frame extraction data")
         main_group.add_argument("--skipAbbyy", dest='skipAbbyy', help="skips ABBYY Cloud OCR processing", action="store_true")
@@ -52,7 +52,7 @@ class ParameterParser(object):
         text_class_group.add_argument('--heightOffset', dest='heightOffset', default=10, action='store', type=int, help='Distance of caption and footing to the average text height.')
         
         ocr_group = self.__parser.add_argument_group("ocrOptions")
-        ocr_group.add_argument('--tesseractLanguage', dest='tesseractLanguage', default="eng", action='store', type=str, help='Tesseract recognition language')
+        ocr_group.add_argument('--tesseractLanguage', dest='tesseractLanguage', default="eng", action='store', type=str, help='Tesseract recognition language. Languages are set as three character words (eng, deu, fra etc). Default is eng.')
    
    
     def parse(self, args):
