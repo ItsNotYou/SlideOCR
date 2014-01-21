@@ -46,6 +46,17 @@ class TableReader:
         return self.appendVideoPath(timestamps, pathToVideo)
 
 
+class Extractor:
+    
+    def extract(self):
+        print "Nothing to extract since this is a stub. If you see this message then somebody didn't overwrite the extract() function correctly."
+        
+        
+    def write(self, images):
+        for image in images:
+            print image.text + " (" + image.contentType + ")"
+        
+    
 class FrameExtractor:
     
     procPath = "ffmpeg"
@@ -112,7 +123,7 @@ class ExtractionHelper:
         return images
     
 
-class MySqlVideoExtractor:
+class MySqlVideoExtractor(Extractor):
     
     workingDirectory = None
     videoId = None
@@ -129,7 +140,7 @@ class MySqlVideoExtractor:
         writer.writeResults(images)
         
         
-class VideoExtractor:
+class VideoExtractor(Extractor):
     
     workingDirectory = None
     videoPath = None
@@ -143,13 +154,8 @@ class VideoExtractor:
     def extract(self):
         return ExtractionHelper().convertVideoByTable(self.videoPath, self.splitPath, self.workingDirectory)
     
-    def write(self, images):
-        for image in images:
-            #print image.text
-            print image.text + " (" + image.contentType + ")"
-    
-    
-class ImageExtractor:
+        
+class ImageExtractor(Extractor):
     
     workingDirectory = None
     imagePath = None
@@ -161,12 +167,8 @@ class ImageExtractor:
     def extract(self):
         return ExtractionHelper().convertSingleImage(self.imagePath, self.workingDirectory)
     
-    def write(self, images):
-        for image in images:
-            print image.text
     
-    
-class ZipExtractor:
+class ZipExtractor(Extractor):
     
     workingDirectory = None
     zipPath = None
@@ -177,8 +179,4 @@ class ZipExtractor:
         
     def extract(self):
         return ExtractionHelper().convertZip(self.zipPath, self.workingDirectory)
-    
-    def write(self, images):
-        for image in images:
-            print image.text + " (" + image.contentType + ")" + " height=" + str(image.bounding.bottom-image.bounding.top)
     
