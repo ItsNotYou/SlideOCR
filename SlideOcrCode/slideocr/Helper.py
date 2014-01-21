@@ -19,7 +19,9 @@ class FileNameCreator():
         add = ""
         for arg in argList:
             add += "_" + str(arg)
-        return os.path.join(head,name + "_%s%s" % (procName,add) + ext)
+        result = os.path.join(head,name + "_%s%s" % (procName,add) + ext)
+        FileNameCreator.rememberedFilenames.append(result)
+        return result
     
     @staticmethod
     def createFileNameWithoutExtension(path,argList,procName, rememberExtension):
@@ -31,28 +33,38 @@ class FileNameCreator():
         add = ""
         for arg in argList:
             add += "_" + str(arg)
-        return os.path.join(head,name + "_%s%s" % (procName,add) + ext)
+        result = os.path.join(head,name + "_%s%s" % (procName,add) + ext)
+        FileNameCreator.rememberedFilenames.append(result + rememberExtension)
+        return result
     
     @staticmethod
     def _createFileName(path, prefix):
         (head, tail) = os.path.split(path)
         (name, ext) = os.path.splitext(tail)
         uniqueId = uuid.uuid4()
-        return os.path.join(head, name + "_%s_%s" % (prefix, str(uniqueId)) + ext)
+        result = os.path.join(head, name + "_%s_%s" % (prefix, str(uniqueId)) + ext)
+        FileNameCreator.rememberedFilenames.append(result)
+        return result
 
     @staticmethod
     def _createFileName2(prefix, uniqueId, extension, pathToWorkspace):
         # creates the file name of an output image
-        return os.path.join(pathToWorkspace, prefix + "_" + str(uniqueId) + extension)
+        result = os.path.join(pathToWorkspace, prefix + "_" + str(uniqueId) + extension)
+        FileNameCreator.rememberedFilenames.append(result)
+        return result
 
     @staticmethod
     def _createFileName3(path, uniqueId):
         # creates the file name of an output image        
         (head, tail) = os.path.split(path)
         (name, ext) = os.path.splitext(tail)
-        return os.path.join(head,name + "_%s" % uniqueId + ext)
+        result = os.path.join(head,name + "_%s" % uniqueId + ext)
+        FileNameCreator.rememberedFilenames.append(result)
+        return result
     
     @staticmethod
-    def getRemberedFilenames():
-        return FileNameCreator.rememberedFilenames
+    def createFileNameFromPath(sourcePath, targetDirectory):
+        result = os.path.join(targetDirectory, os.path.basename(sourcePath));
+        FileNameCreator.rememberedFilenames.append(result)
+        return result
     

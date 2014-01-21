@@ -17,6 +17,8 @@ from ConfigParser import ConfigParser
 import zipfile
 import shlex
 import argparse
+from slideocr.Helper import FileNameCreator
+import os
 
 
 def recognizeFile(extractor, skipAbbyy, skipTesseract, preProcessingBounding, preProcessingOCR, tesseractLanguage, args):
@@ -89,6 +91,13 @@ def recognizeFile(extractor, skipAbbyy, skipTesseract, preProcessingBounding, pr
     Write result into source
     '''
     extractor.write(sortedNonEmptyImages)
+    
+    '''
+    Clean up workspace
+    '''
+    for created in FileNameCreator.rememberedFilenames:
+        if os.path.exists(created):
+            os.remove(created)
     
     
 def executePreprocessing(processors, steps, images):

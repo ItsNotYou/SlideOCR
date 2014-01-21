@@ -7,7 +7,6 @@ Created on 16.12.2013
 import shutil
 import subprocess
 import uuid
-import os
 import numpy
 from slideocr.Data import OcrImage, FrameTimestamp
 from slideocr.MySqlWrapper import MySqlTimestampReader, MySqlResultWriter
@@ -86,7 +85,7 @@ class ExtractionHelper:
     '''
     
     def convertSingleImage(self, imagePath, workingDirectory):
-        targetFile = os.path.join(workingDirectory, os.path.basename(imagePath));
+        targetFile = FileNameCreator.createFileNameFromPath(imagePath, workingDirectory)
         shutil.copyfile(imagePath, targetFile)
         
         images = [OcrImage()]
