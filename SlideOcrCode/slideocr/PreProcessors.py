@@ -35,6 +35,9 @@ class PreProcessors(PreProcessing):
         self.bilinearInterpolation = BilinearInterpolation()
         self.prepro_dict[self.bilinearInterpolation.procName] = self.bilinearInterpolation
         
+        self.antialiasInterpolation = AntialiasInterpolation()
+        self.prepro_dict[self.antialiasInterpolation.procName] = self.antialiasInterpolation
+        
         self.interpolation = Interpolation(args.interpolationMode)
         self.prepro_dict[self.interpolation.procName] = self.interpolation
         
@@ -303,15 +306,14 @@ Argument Hints:
     interpolationMode: Type of interpolation used on the images.
 '''
 
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
+import Image
 import sys
 
 class Interpolation(object):
     
-    procName = "Interpolation"
+    procName = "interpolation"
     interpolationMode = ""
-    modes=["nearest", "bicubic", "bilinear"]
+    modes=["nearest", "bicubic", "bilinear", "antialias"]
     
     def __init__(self, interpolationMode):
         if interpolationMode not in self.modes:
@@ -324,20 +326,28 @@ class Interpolation(object):
         
         for image in images:
             # read in image and apply interpolation
-            img = mpimg.imread(image.path)
+            im = Image.open(image.path)
+            width = im.size[0]/2
+            height = im.size[1]/2
             
-            fig = plt.figure(frameon=False)
-            ax = plt.Axes(fig, [0., 0., 1., 1.])
-            ax.set_axis_off()
-            fig.add_axes(ax)
+            if self.interpolationMode == "nearest":
+                im = im.resize((width, height), Image.NEAREST)
+                im = im.resize((width*2, height*2), Image.NEAREST)
+            elif self.interpolationMode == "bicubic":
+                im = im.resize((width, height), Image.BICUBIC)
+                im = im.resize((width*2, height*2), Image.BICUBIC)
+            elif self.interpolationMode == "bilinear":
+                im = im.resize((width, height), Image.BILINEAR)
+                im = im.resize((width*2, height*2), Image.BILINEAR)
+            elif self.interpolationMode == "antialias":
+                im = im.resize((width, height), Image.ANTIALIAS)
+                im = im.resize((width*2, height*2), Image.ANTIALIAS)
             
-            ax.imshow(img, aspect='normal', interpolation=self.interpolationMode)
-             
             # create filename
             newPath = FileNameCreator.createFileName(image.path, [self.interpolationMode], self.procName)
             
-            # write image
-            fig.savefig(newPath, dpi = 200)
+            # write image 
+            im.save(newPath)    
             
             # add meta informations
             image.metaHistory.append("%s(interpolationMode=%s)" % (self.procName,self.interpolationMode))
@@ -351,7 +361,7 @@ class Interpolation(object):
 
 class NearestInterpolation(object):
     
-    procName = "NearestInterpolation"
+    procName = "nearestInterpolation"
     _subprocessor=None
     
     def __init__(self):
@@ -364,7 +374,7 @@ class NearestInterpolation(object):
 
 class BicubicInterpolation(object):
     
-    procName = "BicubicInterpolation"
+    procName = "bicubicInterpolation"
     _subprocessor=None
     
     def __init__(self):
@@ -377,11 +387,24 @@ class BicubicInterpolation(object):
 
 class BilinearInterpolation(object):
     
-    procName = "BilinearInterpolation"
+    procName = "bilinearInterpolation"
     _subprocessor=None
     
     def __init__(self):
         self._subprocessor=Interpolation("bilinear")
+
+    # processing method
+    def process(self,images):      
+        return self._subprocessor.process(images)
+    
+    
+class AntialiasInterpolation(object):
+    
+    procName = "antialiasInterpolation"
+    _subprocessor=None
+    
+    def __init__(self):
+        self._subprocessor=Interpolation("antialias")
 
     # processing method
     def process(self,images):      
