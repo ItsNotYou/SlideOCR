@@ -12,6 +12,7 @@ import numpy
 from slideocr.Data import OcrImage, FrameTimestamp
 from slideocr.MySqlWrapper import MySqlTimestampReader, MySqlResultWriter
 from slideocr.ZipWrapper import ZipWrapper
+from slideocr.Helper import FileNameCreator
 
 
 class TableReader:
@@ -63,7 +64,7 @@ class FrameExtractor:
             tag = timestamp.tag
             uniqueId = uuid.uuid4()
             sourcePath = timestamp.videoPath
-            targetPath = self._createFileName(tag, uniqueId, '.png')
+            targetPath = FileNameCreator._createFileName2(tag, uniqueId, '.png', self.pathToWorkspace)
             self.extractFrame(seconds, sourcePath, targetPath);
             
             ocrImage = OcrImage()
@@ -77,11 +78,6 @@ class FrameExtractor:
     def extractFrame(self, seconds, sourcePath, targetPath):
         # Does a fast and accurate seeking for the specified timestamp. For details see https://trac.ffmpeg.org/wiki/Seeking%20with%20FFmpeg
         subprocess.call([self.procPath, "-loglevel", "warning", "-ss", str(seconds - self.slowSearchDelta), "-i", sourcePath, "-ss", str(self.slowSearchDelta), "-vframes", "1", targetPath]);
-        
-        
-    def _createFileName(self, prefix, uniqueId, extension):
-        # creates the file name of an output image
-        return os.path.join(self.pathToWorkspace, prefix + "_" + str(uniqueId) + extension)
 
 
 class ExtractionHelper:
