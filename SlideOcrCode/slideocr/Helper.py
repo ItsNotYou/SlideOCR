@@ -10,8 +10,22 @@ import uuid
 
 class FileNameCreator():
     
+    rememberedFilenames = [];
+    
     @staticmethod
     def createFileName(path,argList,procName):
+        (head, tail) = os.path.split(path)
+        (name, ext) = os.path.splitext(tail)
+        add = ""
+        for arg in argList:
+            add += "_" + str(arg)
+        return os.path.join(head,name + "_%s%s" % (procName,add) + ext)
+    
+    @staticmethod
+    def createFileNameWithoutExtension(path,argList,procName, rememberExtension):
+        '''
+        Creates a filename, but doesn't add the rememberExtension. The extension is remembered for automated deletion, though.
+        '''
         (head, tail) = os.path.split(path)
         (name, ext) = os.path.splitext(tail)
         add = ""
@@ -37,4 +51,8 @@ class FileNameCreator():
         (head, tail) = os.path.split(path)
         (name, ext) = os.path.splitext(tail)
         return os.path.join(head,name + "_%s" % uniqueId + ext)
+    
+    @staticmethod
+    def getRemberedFilenames():
+        return FileNameCreator.rememberedFilenames
     

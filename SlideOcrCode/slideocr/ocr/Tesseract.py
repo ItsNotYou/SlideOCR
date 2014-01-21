@@ -29,9 +29,9 @@ class Tesseract(Ocr):
         
         for image in images:
             path = image.boundingPath
-            resultFile = FileNameCreator.createFileName(path, [], self.procName)
-            self._runTesseract(path, resultFile, self.language)
             # Tesseract will automatically append the file ending ".txt", so we have to copy this behaviour
+            resultFile = FileNameCreator.createFileNameWithoutExtension(path, [], self.procName, ".txt")
+            self._runTesseract(path, resultFile, self.language)
             image.text = self._readFileIntoString(resultFile + ".txt")
             # Clean encoding mistakes
             image.text = fix_text(image.text.decode("utf-8"))
