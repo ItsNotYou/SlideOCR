@@ -95,9 +95,10 @@ def recognizeFile(extractor, skipAbbyy, skipTesseract, preProcessingBounding, pr
     '''
     Clean up workspace
     '''
-    for created in FileNameCreator.rememberedFilenames:
-        if os.path.exists(created):
-            os.remove(created)
+    if not args.skipCleanup:
+        for created in FileNameCreator.rememberedFilenames:
+            if os.path.exists(created):
+                os.remove(created)
     
     
 def executePreprocessing(processors, steps, images):
