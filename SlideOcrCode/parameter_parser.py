@@ -11,6 +11,7 @@ class ParameterParser(object):
     def __init__(self):
         ''' Constructor '''
         self.__parser = argparse.ArgumentParser(description="Extract text from a video stream of lecture slides")
+        ParameterParser.add_config_file(self.__parser)
         
         main_group = self.__parser.add_argument_group("General")
         main_group.add_argument('--workingDirectory', dest='workingDirectory', action='store', default='.', help='Path to a directory that will be used as temporary workspace')   
@@ -64,3 +65,7 @@ class ParameterParser(object):
                 argparese object
         '''
         return self.__parser.parse_known_args(args)
+
+    @staticmethod
+    def add_config_file(parser):
+        parser.add_argument('--configFile', dest='configFile', action='store', help='Path to config-file.')

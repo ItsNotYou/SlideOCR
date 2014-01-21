@@ -19,6 +19,7 @@ import shlex
 import argparse
 from slideocr.Helper import FileNameCreator
 import os
+import warnings
 
 
 def recognizeFile(extractor, skipAbbyy, skipTesseract, preProcessingBounding, preProcessingOCR, tesseractLanguage, args):
@@ -144,7 +145,7 @@ def compare(ocrImage1,ocrImage2):
 #determine source of arguments
 #parse parameter to check for config file
 parser = argparse.ArgumentParser(description="Extract text from a video stream of lecture slides")
-parser.add_argument('--configFile', dest='configFile', action='store', help='Path to config-file.')
+ParameterParser.add_config_file(parser)
 (args, unknown_args) = parser.parse_known_args(sys.argv[1:])
 
 argument_list=[]
@@ -162,6 +163,10 @@ argument_list.extend(sys.argv[1:])
 parser = ParameterParser()
 
 (args, unknown_args)=parser.parse(argument_list)
+
+#warn of unknown args
+for arg in unknown_args:
+    warnings.warn("Unknown command line argument %s" % arg)
 
 #assign parameters and execute program if arguments are validated
 if (Validator.validateArguments(args)):
