@@ -8,6 +8,7 @@ import os
 import uuid
 from zipfile import ZipFile
 from slideocr.Data import OcrImage
+from slideocr.Helper import FileNameCreator
 
 
 class ZipWrapper:
@@ -22,7 +23,7 @@ class ZipWrapper:
         results = []
         for zippedFile in zippedFiles:
             oldFile = os.path.join(workspacePath, zippedFile.filename);
-            renamedFile = self._createFileName(oldFile, str(uuid.uuid4()))
+            renamedFile = FileNameCreator._createFileName3(oldFile, str(uuid.uuid4()))
             os.rename(oldFile, renamedFile)
             
             result = OcrImage()
@@ -35,12 +36,6 @@ class ZipWrapper:
         for image in images:
             image.frameId = uuid.uuid4()
         return images
-    
-    def _createFileName(self, path, uniqueId):
-        # creates the file name of an output image        
-        (head, tail) = os.path.split(path)
-        (name, ext) = os.path.splitext(tail)
-        return os.path.join(head,name + "_%s" % uniqueId + ext)
     
     def _getName(self, path):
         (head, tail) = os.path.split(path)

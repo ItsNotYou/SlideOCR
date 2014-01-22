@@ -7,11 +7,11 @@ Created on 16.12.2013
 import shutil
 import subprocess
 import uuid
-import os
 import numpy
 from slideocr.Data import OcrImage, FrameTimestamp
 from slideocr.MySqlWrapper import MySqlTimestampReader, MySqlResultWriter
 from slideocr.ZipWrapper import ZipWrapper
+from slideocr.Helper import FileNameCreator
 
 
 class TableReader:
@@ -46,6 +46,17 @@ class TableReader:
         return self.appendVideoPath(timestamps, pathToVideo)
 
 
+class Extractor:
+    
+    def extract(self):
+        print "Nothing to extract since this is a stub. If you see this message then somebody didn't overwrite the extract() function correctly."
+        
+        
+    def write(self, images):
+        for image in images:
+            print image.text + " (" + image.contentType + ")"
+        
+    
 class FrameExtractor:
     
     procPath = "ffmpeg"
@@ -63,7 +74,7 @@ class FrameExtractor:
             tag = timestamp.tag
             uniqueId = uuid.uuid4()
             sourcePath = timestamp.videoPath
-            targetPath = self._createFileName(tag, uniqueId, '.png')
+            targetPath = FileNameCreator._createFileName2(tag, uniqueId, '.png', self.pathToWorkspace)
             self.extractFrame(seconds, sourcePath, targetPath);
             
             ocrImage = OcrImage()
@@ -77,11 +88,6 @@ class FrameExtractor:
     def extractFrame(self, seconds, sourcePath, targetPath):
         # Does a fast and accurate seeking for the specified timestamp. For details see https://trac.ffmpeg.org/wiki/Seeking%20with%20FFmpeg
         subprocess.call([self.procPath, "-loglevel", "warning", "-ss", str(seconds - self.slowSearchDelta), "-i", sourcePath, "-ss", str(self.slowSearchDelta), "-vframes", "1", targetPath]);
-        
-        
-    def _createFileName(self, prefix, uniqueId, extension):
-        # creates the file name of an output image
-        return os.path.join(self.pathToWorkspace, prefix + "_" + str(uniqueId) + extension)
 
 
 class ExtractionHelper:
@@ -90,7 +96,7 @@ class ExtractionHelper:
     '''
     
     def convertSingleImage(self, imagePath, workingDirectory):
-        targetFile = os.path.join(workingDirectory, os.path.basename(imagePath));
+        targetFile = FileNameCreator.createFileNameFromPath(imagePath, workingDirectory)
         shutil.copyfile(imagePath, targetFile)
         
         images = [OcrImage()]
@@ -117,7 +123,7 @@ class ExtractionHelper:
         return images
     
 
-class MySqlVideoExtractor:
+class MySqlVideoExtractor(Extractor):
     
     workingDirectory = None
     videoId = None
@@ -134,7 +140,7 @@ class MySqlVideoExtractor:
         writer.writeResults(images)
         
         
-class VideoExtractor:
+class VideoExtractor(Extractor):
     
     workingDirectory = None
     videoPath = None
@@ -148,13 +154,8 @@ class VideoExtractor:
     def extract(self):
         return ExtractionHelper().convertVideoByTable(self.videoPath, self.splitPath, self.workingDirectory)
     
-    def write(self, images):
-        for image in images:
-            #print image.text
-            print image.text + " (" + image.contentType + ")"
-    
-    
-class ImageExtractor:
+        
+class ImageExtractor(Extractor):
     
     workingDirectory = None
     imagePath = None
@@ -166,12 +167,8 @@ class ImageExtractor:
     def extract(self):
         return ExtractionHelper().convertSingleImage(self.imagePath, self.workingDirectory)
     
-    def write(self, images):
-        for image in images:
-            print image.text
     
-    
-class ZipExtractor:
+class ZipExtractor(Extractor):
     
     workingDirectory = None
     zipPath = None
@@ -182,8 +179,4 @@ class ZipExtractor:
         
     def extract(self):
         return ExtractionHelper().convertZip(self.zipPath, self.workingDirectory)
-    
-    def write(self, images):
-        for image in images:
-            print image.text + " (" + image.contentType + ")" + " height=" + str(image.bounding.bottom-image.bounding.top)
     
