@@ -10,7 +10,7 @@ Where to start
 
 ### Installation ###
 
-The code is written in [Python 2.7][python]. Apart from that we need [OpenCV for Python][opencv] for pre processing, [Tesseract][tesseract] for OCR processing, [FFmpeg][ffmpeg] for frame extraction, [MySQLdb][mysqldb] for MySQL integration and [matplotlib][matplotlib]. Tesseract and FFmpeg have to be in our path variable. We recommend the 32 bit version of every program and library. On the python side, we need [Requests][requests] for network communication, [ftfy][ftfy] for handling unicode mistakes, [python-dateutil][dateutil], [pyparsing][pyparsing] and [six][six] (which can all be installed via *pip install <library>*).
+The code is written in [Python 2.7][python]. Apart from that we need [OpenCV for Python][opencv] for pre processing, [Tesseract][tesseract] for OCR processing, [FFmpeg][ffmpeg] for frame extraction, [MySQLdb][mysqldb] for MySQL integration and [Python Imaging Library (PIL)][pil]. Tesseract and FFmpeg have to be in our path variable. We recommend the 32 bit version of every program and library. On the python side, we need [Requests][requests] for network communication, [ftfy][ftfy] for handling unicode mistakes, [python-dateutil][dateutil], [pyparsing][pyparsing] and [six][six] (which can all be installed via *pip install <library>*).
 
    [python]: http://www.python.org/download/releases/2.7.6/
    [opencv]: http://opencvpython.blogspot.de/2012/05/install-opencv-in-windows-for-python.html
@@ -23,6 +23,7 @@ The code is written in [Python 2.7][python]. Apart from that we need [OpenCV for
    [six]: http://www.lfd.uci.edu/~gohlke/pythonlibs/#six
    [matplotlib]: http://matplotlib.org/
    [mysqldb]: http://pypi.python.org/pypi/MySQL-python/
+   [pil]: http://www.pythonware.com/products/pil/
 
 ### Configuration ###
 
