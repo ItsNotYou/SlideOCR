@@ -24,29 +24,32 @@ if not os.path.exists(Paths.pythonPath()):
     sys.exit(-1)
 
 if not os.path.exists(Paths.pipPath()):
-    # pip isn't installed yet, let's change that
+    print "Installing pip"
     ez_setup = os.path.join(Paths.installPath, "ez_setup.py")
     get_pip = os.path.join(Paths.installPath, "get-pip.py")
     call([Paths.pythonPath(), ez_setup])
     call([Paths.pythonPath(), get_pip])
 
+print "Installing libraries via pip"
 call([Paths.pipPath(), "-q", "install", "requests"])
 call([Paths.pipPath(), "-q", "install", "ftfy"])
 call([Paths.pipPath(), "-q", "install", "django"])
 
+print "Installing OpenCV for python"
 shutil.copyfile(os.path.join(Paths.installPath, "cv2.pyd"), os.path.join(Paths.pythonInstallDir, "Lib\site-packages", "cv2.pyd"))
 
+print "Installing external libraries"
 call([os.path.join(Paths.installPath, "PIL-1.1.7.win32-py2.7.exe")])
 call([os.path.join(Paths.installPath, "numpy-1.8.0-win32-superpack-python2.7.exe")])
 call([os.path.join(Paths.installPath, "python-dateutil-2.2.win32-py2.7.exe")])
 call([os.path.join(Paths.installPath, "MySQL-python-1.2.5.win32-py2.7.exe")])
 
 if not Paths.isInstalled("ffmpeg"):
-    # install ffmpeg
+    print "Installing ffmpeg"
     ffmpeg = os.path.join(Paths.installPath, "ffmpeg.zip")
     ZipFile(ffmpeg, 'r').extractall(Paths.unzipPath)
 
 if not Paths.isInstalled("tesseract"):
-    # install tesseract
+    print "Installing Tesseract"
     tesseract = os.path.join(Paths.installPath, "tesseract-ocr-setup-3.02.02.exe")
     call([tesseract])
