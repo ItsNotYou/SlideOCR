@@ -12,6 +12,8 @@ from slideocr.Data import OcrImage, FrameTimestamp
 from slideocr.MySqlWrapper import MySqlTimestampReader, MySqlResultWriter
 from slideocr.ZipWrapper import ZipWrapper
 from slideocr.Helper import FileNameCreator
+from slideocr.conf.Paths import Paths
+import os
 
 
 class TableReader:
@@ -86,8 +88,13 @@ class FrameExtractor:
     
     
     def extractFrame(self, seconds, sourcePath, targetPath):
+        procPath = self.procPath
+        if not Paths.isInstalled(procPath):
+            # Try fallback directory
+            procPath = os.path.join(Paths.ffmpegBinDir(), procPath)
+        
         # Does a fast and accurate seeking for the specified timestamp. For details see https://trac.ffmpeg.org/wiki/Seeking%20with%20FFmpeg
-        subprocess.call([self.procPath, "-loglevel", "warning", "-ss", str(seconds - self.slowSearchDelta), "-i", sourcePath, "-ss", str(self.slowSearchDelta), "-vframes", "1", targetPath]);
+        subprocess.call([procPath, "-loglevel", "warning", "-ss", str(seconds - self.slowSearchDelta), "-i", sourcePath, "-ss", str(self.slowSearchDelta), "-vframes", "1", targetPath]);
 
 
 class ExtractionHelper:
