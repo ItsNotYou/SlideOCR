@@ -41,7 +41,7 @@ class ParameterParser(object):
         opening_group.add_argument('--px', dest='px', type=int, action='store', default=3, help='Discarded pixel.')
         
         interpol_group = self.__parser.add_argument_group("Interpolation")
-        interpol_group.add_argument('--interpolationMode', dest='interpolationMode', default="nearest", choices=["nearest", "bicubic", "bilinear"], action='store', help='Discarded pixel.')
+        interpol_group.add_argument('--interpolationMode', dest='interpolationMode', default="nearest", choices=["nearest", "bicubic", "bilinear","antialias"], action='store', help='Interpolationsmodus.')
         
         bounding_group = self.__parser.add_argument_group("BoundingBoxes")
         bounding_group.add_argument('--minAreaSize', dest='minAreaSize', type=int, default=20, action='store', help='Minimal size of a text area. For detecting small characters use a small value, but you will get quite more boxes as result. ')
