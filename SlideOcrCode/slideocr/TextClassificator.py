@@ -16,9 +16,37 @@ class TextClassificator(object):
     
     def __init__(self,heightOffset):
         self.heightOffset = heightOffset
-    
+        
     # methode to classify text snippets into caption, footing and content
     def classify(self,images):
+        self.classifyPerSlideSet(images)
+        #self.classifyPerSlide(images)
+        
+    # classify text by calculating average height over complete slide set
+    def classifyPerSlideSet(self,images):
+        
+        # calculate average height
+        heightSum = 0
+        for image in images:
+            currentHeight = image.bounding.bottom - image.bounding.top
+            heightSum += currentHeight
+        averageHeight = heightSum / len(images)
+        
+        # classify text
+        for image in images:
+            currentHeight = image.bounding.bottom - image.bounding.top
+                
+            if currentHeight > averageHeight + self.heightOffset:
+                image.contentType = "caption"
+                
+            elif currentHeight < averageHeight - self.heightOffset:
+                image.contentType = "footing"
+                
+            else:
+                image.contentType = "content"
+    
+    # classify text by calculating average height over every single slide
+    def classifyPerSlide(self,images):
         
         # put frames belonging to the same image in an array
         imageDic = {}
