@@ -71,7 +71,6 @@ class MySqlResultWriter(DbConnection):
         availableSegmentIds = self.__readAvailableSegmentIds(cursor)
         
         for image in self.images:
-            print image.tag, image.text
             self.__safelyWriteRow(cursor, image, availableSegmentIds, ocrDict)
             
     def __safelyWriteRow(self, cursor, image, availableSegmentIds, ocrDict):

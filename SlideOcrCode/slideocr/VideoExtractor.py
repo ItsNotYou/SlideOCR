@@ -14,6 +14,7 @@ from slideocr.ZipWrapper import ZipWrapper
 from slideocr.Helper import FileNameCreator
 from slideocr.conf.Paths import Paths
 import os
+import warnings
 
 
 class TableReader:
@@ -56,7 +57,11 @@ class Extractor:
         
     def write(self, images):
         for image in images:
-            print image.text + " (" + image.contentType + ")"
+            try:
+                print image.text + " (" + image.contentType + ")"
+            except UnicodeEncodeError as e:
+                warnings.warn("Could not print special character")
+                print e
         
     
 class FrameExtractor:
@@ -143,6 +148,7 @@ class MySqlVideoExtractor(Extractor):
         return ExtractionHelper().convertVideoByDatabase(self.videoId, self.workingDirectory)
     
     def write(self, images):
+        Extractor.write(self, images)
         writer = MySqlResultWriter()
         writer.writeResults(images)
         
