@@ -23,12 +23,27 @@ class AbbyyCloud(Ocr):
     If a bounding box is specified, the box is copied into a separate file before detection is executed
     '''
     
+    batchSize = None
+    
+    def __init__(self, batchSize):
+        self.batchSize = batchSize
+        
+    def chunks(self, values, size):
+        for i in xrange(0, len(values), size):
+            yield values[i:i+size];
+    
     def process(self, images):
         images = BoundingBoxExtraction().process(images)
         
+        start = time.time()
+        
         uploader = AbbyyUploader()
-        for image in images:
-            uploader.processImage(image)
+        for chunk in self.chunks(images, self.batchSize):
+            uploader.processImages(chunk);
+        
+        end = time.time()
+        print "Abbyy took %d seconds" % (end - start)
+        
         return images;
 
 
@@ -107,8 +122,34 @@ class AbbyyUploader:
         self.downloadResult(task)
         
     def processImages(self, images):
+        tasks = []
+        
+        # Create all tasks
         for image in images:
-            self.processImage(image)
+            task = AbbyyTask()
+            task.image = image
+            tasks.append(task)
+        
+        # Upload all images
+        for task in tasks:
+            self.callProcessImage(task)
+        
+        # Wait for image completion
+        self.waitForAllTasks(tasks)
+        
+        # Download results
+        for task in tasks:
+            self.downloadResult(task)
+    
+    def waitForAllTasks(self, tasks):
+        waiting = list(tasks)
+        while waiting:
+            current = waiting[0]
+            self.readStatus(current)
+            if current.IsActive():
+                time.sleep(4)
+            else:
+                waiting.remove(current)
         
     def callSubmitImage(self, task):
         files = {'file': open(task.image.path, 'rb')}

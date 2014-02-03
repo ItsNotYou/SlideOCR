@@ -66,7 +66,7 @@ def recognizeFile(extractor, skipAbbyy, skipTesseract, preProcessingBounding, pr
     '''
     OCR
     '''
-    ocr = OcrEngines(skipAbbyy, skipTesseract, tesseractLanguage)
+    ocr = OcrEngines(skipAbbyy, skipTesseract, tesseractLanguage, args.abbyyBatchSize)
     images = ocr.process(images)
     
     '''
