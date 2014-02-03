@@ -24,9 +24,11 @@ class AbbyyCloud(Ocr):
     '''
     
     batchSize = None
+    language = None
     
-    def __init__(self, batchSize):
+    def __init__(self, batchSize, language):
         self.batchSize = batchSize
+        self.language = language
         
     def chunks(self, values, size):
         for i in xrange(0, len(values), size):
@@ -37,7 +39,7 @@ class AbbyyCloud(Ocr):
         
         start = time.time()
         
-        uploader = AbbyyUploader()
+        uploader = AbbyyUploader(self.language)
         for chunk in self.chunks(images, self.batchSize):
             uploader.processImages(chunk);
         
@@ -64,6 +66,7 @@ class AbbyyUploader:
     
     appId = None
     pwd = None
+    language = None
     processFieldsTemplate = """<?xml version="1.0" encoding="UTF-8"?>
 <document xmlns="http://ocrsdk.com/schema/taskDescription-1.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://ocrsdk.com/schema/taskDescription-1.0.xsd http://ocrsdk.com/schema/taskDescription-1.0.xsd">
 
@@ -75,9 +78,10 @@ class AbbyyUploader:
 </page>
 </document>"""
     
-    def __init__(self):
+    def __init__(self, language):
         self.appId = Secrets.ABBYY_APP_ID
         self.pwd = Secrets.ABBYY_PWD
+        self.language = language
         
     def buildAuthInfo(self):
         # Because the data will be sent as a http header we have to remove the line break, otherwise the http network code breaks
@@ -85,7 +89,7 @@ class AbbyyUploader:
     
     def callProcessImage(self, task):
         files = {'file': open(task.image.boundingPath, 'rb')}
-        params = {"exportFormat": "txt"}
+        params = {"exportFormat": "txt", "language": self.language}
         headers = self.buildAuthInfo()
         
         res = requests.post("http://cloud.ocrsdk.com/processImage", files = files, params = params, headers = headers)

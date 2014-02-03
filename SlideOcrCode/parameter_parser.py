@@ -54,6 +54,7 @@ class ParameterParser(object):
         
         ocr_group = self.__parser.add_argument_group("ocrOptions")
         ocr_group.add_argument('--tesseractLanguage', dest='tesseractLanguage', default="eng", action='store', type=str, help='Tesseract recognition language. Languages are set as three character words (eng, deu, fra etc). Default is eng.')
+        ocr_group.add_argument('--abbyyLanguage', dest='abbyyLanguage', default="English", action='store', type=str, help='ABBYY recognition language. Languages are set as full word (English, German, French etc). Default is English.')
         ocr_group.add_argument('--abbyyBatchSize', dest='abbyyBatchSize', default=100, action='store', type=int, help='Number of ABBYY tasks that are processed in parallel.')
    
    

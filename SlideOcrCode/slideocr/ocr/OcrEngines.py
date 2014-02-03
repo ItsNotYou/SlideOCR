@@ -17,11 +17,11 @@ class OcrEngines(Ocr):
     
     engines = []
     
-    def __init__(self, skipAbbyy = False, skipTesseract = False, tesseractLanguage = "eng", abbyyBatchSize = 100):
+    def __init__(self, skipAbbyy = False, skipTesseract = False, tesseractLanguage = "eng", abbyyLanguage = "English", abbyyBatchSize = 100):
         if not skipTesseract:
             self.engines.append(Tesseract(tesseractLanguage))
         if not skipAbbyy:
-            self.engines.append(AbbyyCloud(abbyyBatchSize))
+            self.engines.append(AbbyyCloud(abbyyBatchSize, abbyyLanguage))
     
     
     def process(self, images):
