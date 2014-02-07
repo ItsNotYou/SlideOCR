@@ -16,9 +16,9 @@ If you are on Windows 7 (64 bit) you can just use the install script. The script
 
 A manual installation requires the following:
 
-1. [requests] (via [pip])
-1. [ftfy] (via [pip])
-1. [django] (via [pip])
+1. [requests][requests] (via [pip][pip])
+1. [ftfy][ftfy] (via [pip][pip])
+1. [django][django] (via [pip][pip])
 1. [OpenCV for Python][opencv] (included in install directory)
 1. [Python Imaging Library (PIL)][pil]
 1. [NumPy][numpy]
